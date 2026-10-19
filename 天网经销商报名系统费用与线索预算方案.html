@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>天网经销商报名系统按线索计费方案</title>
+<style>
+:root{--ink:#172033;--muted:#66738b;--line:#e3e8f1;--blue:#2458d3;--canvas:#f4f6fa;--surface:#fff}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--canvas);color:var(--ink);font:15px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+header{padding:45px 22px 37px;background:linear-gradient(125deg,#173b94,#2864dc);color:white} .hero,main,footer{width:min(1040px,calc(100% - 40px));margin:auto} .eyebrow{margin:0 0 8px;color:#d7e3ff;font-size:13px;letter-spacing:.08em} h1{margin:0;font-size:clamp(27px,4vw,38px);line-height:1.35} .meta{margin-top:15px;color:#e8eeff}
+main{padding:27px 0 55px} article{padding:34px 42px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 6px 22px #21375a0a} h2{margin:34px 0 13px;padding-bottom:9px;border-bottom:1px solid var(--line);font-size:22px;line-height:1.45;scroll-margin-top:20px} h2:first-of-type{margin-top:0} h3{margin:25px 0 9px;font-size:17px;scroll-margin-top:20px} p{margin:9px 0} ul,ol{margin:8px 0 13px;padding-left:1.45em} li{margin:5px 0;padding-left:2px} strong{color:#202e4a} blockquote{margin:12px 0;padding:12px 16px;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;background:#f1f5ff;color:#35445f} .table-wrap{overflow-x:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:10px} table{width:100%;border-collapse:collapse;min-width:620px} th,td{padding:11px 13px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} th{background:#f5f7fb;color:#47546d;font-size:13px} tr:last-child td{border-bottom:0} code{padding:2px 6px;border-radius:5px;background:#f0f3f8;color:#234da8} footer{padding:0 0 25px;color:var(--muted);font-size:12px;text-align:center}
+header .meta strong{color:inherit}
+@media(max-width:700px){article{padding:24px 19px}} @media print{body{background:white;font-size:11pt}header{background:white;color:var(--ink);padding:20px 0;border-bottom:2px solid var(--blue)}.eyebrow,.meta{color:#52617a}main,.hero,footer{width:100%}article{padding:0;border:0;box-shadow:none}h2{break-after:avoid}h3{break-after:avoid}.table-wrap{overflow:visible}table{min-width:0;font-size:9pt}}
+</style></head><body><header><div class="hero"><h1>天网经销商报名系统按线索计费方案</h1><p class="meta"><strong>版本：供业务审阅</strong></p><p class="meta"><strong>范围：按线索单价计费、活动预算、续充申请和上游线索下发校验</strong></p></div></header><main><article>
+<h2>1. 方案目标</h2>
+<p>在现有经销商报名系统中增加按线索计费和预算控制能力：</p>
+<ul><li>运营在“媒体价格设置”维护各媒体、各城市等级的线索单价；</li><li>活动选择设备类型并关联适用媒体；</li><li>经销商报名时为整个活动申报一笔初始预算；</li><li>总部在现有“活动报名管理”中审核报名并一并审核预算；</li><li>上游在下发前查询经销商、媒体和时间是否符合下发条件；</li><li>上游回传线索下发结果后，本系统对成功线索按适用单价扣费；</li><li>预算不足时暂停该活动下的新线索下发；续充审核通过后恢复。</li></ul>
+<p>本方案优先复用现有配置、报名、费用、台账、权限和导出能力。逐条扣费记录、后台重试和异常处理是新增定制能力。</p>
+<h2>2. 配置与报名流程</h2>
+<h3>2.1 城市等级设置</h3>
+<p>沿用现有“城市等级设置”，由运营维护<strong>城市 + 媒体对应的媒体等级</strong>。</p>
+<p>例如：</p>
+<blockquote>泉州 + 汽车之家 → 3级</blockquote>
+<h3>2.2 媒体价格设置</h3>
+<p>运营按年度、媒体等现有维度维护价格：</p>
+<ul><li>设备类型新增“按线索计费”选项；</li><li>选择后，价格区域显示一级至六级城市线索单价；</li><li>不同媒体可适用不同城市等级；未配置单价的等级视为不适用；</li><li>线索单价必填且大于 0，最多保留两位小数；</li><li>系统依据城市等级和媒体价格匹配线索单价。</li></ul>
+<p>例如，泉州的汽车之家媒体等级为 3 级，则使用该年度汽车之家配置的 3 级线索单价。其他设备类型沿用现有配置和业务逻辑。</p>
+<h3>2.3 活动创建、报名和审核</h3>
+<p>活动创建时：</p>
+<ul><li>增加设备类型字段，与媒体价格设置共用同一套字典；</li><li>选择设备类型后，联动展示对应年度、类型下可用的媒体；</li><li>活动媒体列表增加“设备类型”列；</li><li>只能选择已配置且适用的媒体价格。</li></ul>
+<p>经销商报名及审核：</p>
+<ol><li>经销商报名活动；</li><li>对按线索计费活动，经销商填写<strong>整个活动的初始预算申请金额</strong>；</li><li>总部在现有“活动报名管理”中审核报名并查看申请金额；</li><li>报名通过后，预算生效；未通过则预算不生效；</li><li>报名通过时保存当时适用的媒体、城市等级和线索单价。</li></ol>
+<p>初始预算申请金额必须大于 0，允许保留两位小数。该金额是业务预算，不代表经销商已实际付款。</p>
+<h2>3. 价格生效方式</h2>
+<h3>当前建议：报名审核通过时锁价</h3>
+<p>报名审核通过时，系统保存该报名对应的媒体、城市等级和线索单价。活动期间新进入的线索，都按报名记录中保存的单价计费。</p>
+<p>运营后续调整媒体价格：</p>
+<ul><li>不影响已审核通过的报名；</li><li>新价格用于之后的报名。</li></ul>
+<h3>运营讨论选项：线索下发时动态取价</h3>
+<p>如果运营希望活动期间改价后立即影响后续新线索，可改为每条线索成功下发时读取最新价格。</p>
+<div class="table-wrap"><table><thead><tr><th>对比项</th><th>报名审核通过时锁价（当前建议）</th><th>线索下发时动态取价</th></tr></thead><tbody>
+<tr><td>单价确定时间</td><td>报名审核通过时</td><td>每条线索下发时</td></tr>
+<tr><td>活动期间改价</td><td>不影响已通过报名</td><td>影响之后下发的线索</td></tr>
+<tr><td>经销商费用预期</td><td>活动期间单价稳定</td><td>费用可能随运营调价变化</td></tr>
+<tr><td>扣费追溯</td><td>按报名保存的单价核对</td><td>需记录每条线索的价格版本、生效时间和单价</td></tr>
+<tr><td>实施与对账影响</td><td>较小</td><td>较大；还需确定生效时间和错误调价的处理方式</td></tr>
+</tbody></table></div>
+<p><strong>本稿按审核通过时锁价设计。</strong>如运营决定采用动态取价，需要重新确定计价规则、价格版本记录和异常调价处理方式，并评估开发范围。</p>
+<h2>4. 活动总预算</h2>
+<ul><li>一个经销商在一个活动中填写一笔总预算；</li><li>活动中所有已报名媒体共用该预算；</li><li>各媒体分别记录线索数量和消耗金额，扣款统一从活动总余额中扣除；</li><li>某媒体消耗预算会减少其他媒体共同可用的余额；</li><li>续充申请针对整个活动，不按媒体拆分；</li><li>不单独设置某个媒体的预算上限；</li><li>预算不足时，暂停该活动下所有媒体的新线索下发。</li></ul>
+<p>采用活动总预算可简化经销商报名、续充和运营审核流程，也更容易复用现有活动费用结构。</p>
+<h2>5. 上游查询、回传与扣费</h2>
+<h3>5.1 查询资格</h3>
+<p>上游查询参数为：</p>
+<blockquote><strong>经销商编号 + 线索实际下发时间 + 媒体</strong></blockquote>
+<p>本系统根据时间匹配有效活动，不要求上游传活动编号。现有活动时间冲突校验继续沿用。</p>
+<p>返回结果分为：</p>
+<ol><li><strong>允许下发</strong>：活动有效、报名已通过、查询媒体属于已审核的报名范围、预算充足，且活动未取消或结束；</li><li><strong>禁止下发</strong>：存在本系统管理的活动，但报名、媒体、活动状态或预算条件不满足；</li><li><strong>无活动配置</strong>：当前经销商和时间没有本系统管理的活动，由上游自行决定。</li></ol>
+<p>如果经销商有有效活动，但查询媒体不在已审核通过的报名范围内，返回<strong>禁止下发</strong>。</p>
+<p>预算足够的定义为：</p>
+<blockquote><strong>当前可用预算大于或等于查询媒体的一条线索单价。</strong></blockquote>
+<p>例如活动总余额为 20 元，查询媒体单价为 15 元时允许下发；单价为 30 元时禁止下发。</p>
+<p>有活动但本系统查询异常时，上游禁止下发并自动重试；无活动配置时由上游自行处理。</p>
+<h3>5.2 回传与扣费</h3>
+<p>成功和失败回传均须带媒体信息，并能识别经销商、线索唯一编号、实际下发时间和下发结果。失败时还须提供固定失败原因，并允许补充说明。</p>
+<ul><li>成功回传：按适用单价扣费；</li><li>失败回传：记录原因，不扣费；</li><li>本系统不等待后续有效性确认；</li><li>同一线索唯一编号只扣费一次；</li><li>媒体、经销商或实际下发时间不匹配：不扣费并标记异常；</li><li>回传延迟但实际下发时间有效：仍可正常扣费；</li><li>资格校验和余额扣减采用原子操作；</li><li>下发失败由上游负责重试，本系统不主动重新下发；</li><li>接口和页面统一使用北京时间（UTC+8），接口认证沿用现有机制。</li></ul>
+<h3>5.3 金额与数量精度</h3>
+<ul><li>每条成功线索先按单价四舍五入到分，再逐条扣费并汇总；</li><li>金额内部保留两位小数，页面和导出沿用现有展示格式；</li><li>线索数、天数和重试次数均为整数。</li></ul>
+<h2>6. 初始预算、续充和费用字段</h2>
+<h3>6.1 初始预算</h3>
+<ul><li>仅按线索计费活动需要初始预算；</li><li>经销商报名时填写初始预算申请金额；</li><li>总部在现有报名审核流程中审核，不再通过“编辑费用”逐店录入；</li><li>审核通过后预算生效。</li></ul>
+<h3>6.2 续充预算</h3>
+<ul><li>经销商在已报名活动中提交续充预算申请；本期不接入银联、支付或实际充值；</li><li>余额不足前即可申请；</li><li>金额必须大于 0，允许两位小数，不设最低或最高金额；</li><li>同一活动只能有一笔待审核申请；</li><li>经销商提交后不能撤回或修改；需要调整金额时，由运营拒绝后经销商重新申请；</li><li>运营只能通过或拒绝，不能修改申请金额；</li><li>拒绝原因必填，并可补充说明；</li><li>通过和拒绝都需二次确认，审核完成后申请锁定；</li><li>审核通过后立即增加预算并恢复线索下发资格；</li><li>活动结束或取消时，待审核申请自动失效；</li><li>沿用现有活动费用管理权限；</li><li>经销商在“我的天网活动”查看申请金额、状态、审核结果和拒绝原因，不显示内部审核日志，不增加外部通知；</li><li>申请、审核、拒绝、失效及预算增加保留完整记录。</li></ul>
+<h3>6.3 现有费用字段</h3>
+<ul><li>现有“存款金额”改称<strong>累计预算</strong>；</li><li>累计预算 = 初始预算 + 已审核通过的续充预算；</li><li>当前可用预算 = 累计预算 − 实际消耗费用；</li><li>活动结束后，应退费金额沿用现有字段，按累计预算减去实际消耗计算；</li><li>实际退款在线下完成后登记“已退费金额”，系统不接入实际退款。</li></ul>
+<h2>7. 扣费失败和重试</h2>
+<p>扣费记录状态包括：</p>
+<ul><li>待扣费；</li><li>扣费成功；</li><li>扣费失败；</li><li>待人工处理；</li><li>无需扣费（线索下发失败）。</li></ul>
+<p>扣费失败后由后台自动重试，最多 3 次；仍失败时进入“待人工处理”。运营可手动重新触发扣费，最多另外 3 次。自动重试和人工重试分别计数，两阶段合计最多 6 次尝试。</p>
+<p>每次重试沿用原单价和计费规则，不允许修改金额。手动重试仍失败时保持待人工处理状态。运营不能手工修改预算、余额或扣费结果。</p>
+<h2>8. 页面方案</h2>
+<h3>8.1 媒体价格设置</h3>
+<ul><li>设备类型字典增加“按线索计费”；</li><li>选择后，价格区域展示一级至六级城市线索单价；</li><li>未配置单价的等级视为不适用；</li><li>其他设备类型沿用现有逻辑。</li></ul>
+<h3>8.2 活动创建与报名管理</h3>
+<ul><li>活动按设备类型联动可用媒体，媒体列表增加设备类型列；</li><li>按线索计费的报名展示初始预算申请金额；年度价格活动不显示；</li><li>总部在现有活动报名管理中查看申请金额并审核；</li><li>报名通过后预算生效，并保存当时的价格信息。</li></ul>
+<h3>8.3 活动费用管理和费用详情</h3>
+<p>复用现有页面：</p>
+<ul><li>列表增加累计预算、实际消耗、当前可用预算三个金额字段；</li><li>预算状态由系统自动计算；</li><li>费用导出增加上述三个核心金额字段；</li><li>费用详情展示必要汇总和异常信息；</li><li>不再使用“编辑费用”录入初始预算。</li></ul>
+<p><strong>逐条扣费异常处理属于新增定制开发。</strong>目前看到的现有费用页面提供汇总，没有发现逐条线索扣费异常查看和处理能力。本次需在现有费用详情中增加：</p>
+<ul><li>逐条扣费异常记录；</li><li>线索编号、扣费状态、失败原因；</li><li>自动和人工重试次数；</li><li>对“待人工处理”记录提供重新扣费操作；</li><li>重试成功后同步扣费记录、活动费用汇总、可用预算和相关页面。</li></ul>
+<p>后台自动重试、逐条扣费状态和异常列表是新增能力，但由现有活动费用页面承载，不另建异常处理页面。重新扣费沿用现有活动费用管理权限。</p>
+<h3>8.4 续充申请审核</h3>
+<p>在活动费用管理下增加“续充申请审核”子页面：</p>
+<ul><li>复用现有费用筛选条件，只增加申请状态；</li><li>按待审核、已通过、已拒绝、已失效分标签，默认进入待审核；</li><li>列表提供查看入口，通过和拒绝在详情弹窗内完成；</li><li>审核完成后自动刷新；</li><li>复用现有权限和费用导出。</li></ul>
+<h3>8.5 经销商页面、台账和导出</h3>
+<ul><li>“我的天网活动”展示本活动预算、消耗和续充状态，不展示完整媒体价格配置；</li><li>显示预算和申请综合状态，例如“预算不足，续充审核中”或“续充已通过，线索接收已恢复”；</li><li>复用现有活动报名台账；</li><li>不新增独立线索扣费明细导出。</li></ul>
+<h2>9. 活动结束、退款和预算状态</h2>
+<ul><li>活动结束、取消或提前结束后停止新线索下发；</li><li>已成功下发的线索仍正常扣费；</li><li>活动结束或取消时，待审核续充申请自动失效；</li><li>应退预算沿用现有应退费金额和已退费金额字段，本系统不接入实际退款；</li><li>预算状态按以下优先级展示：活动已取消、活动已结束、预算不足且续充审核中、预算不足、预算充足。</li></ul>
+<h2>10. 待技术评审事项</h2>
+<p>以下是开发和上游对接事项，不改变已确认的业务规则：</p>
+<ol><li>上游接口字段、错误码、超时和重试约定；</li><li>线索唯一编号的来源和唯一范围；</li><li>逐条扣费记录如何关联现有费用数据和台账；</li><li>自动、人工重试任务的调度和异常恢复机制；</li><li>现有费用字段与预算及退款字段的具体存储映射。</li></ol>
+<h2>11. 验收重点</h2>
+<ul><li>媒体价格能按年度、媒体、设备类型配置城市等级线索单价；</li><li>活动按设备类型联动可用媒体，媒体列表显示设备类型；</li><li>按线索计费报名显示初始预算申请金额，年度价格活动保持现有流程；</li><li>总部能在活动报名管理中查看预算申请，审核通过后预算生效；</li><li>已审核报名按确认的价格生效规则计费；</li><li>上游按经销商、时间和媒体查询，正确返回允许、禁止或无活动配置；</li><li>未纳入已审核报名的媒体返回禁止下发；</li><li>预算至少足以支付查询媒体的一条线索时才允许下发；</li><li>成功回传扣费、失败回传不扣费、重复回传不重复扣费；</li><li>并发下发不会造成负余额或超额扣费；</li><li>自动和人工重试分别最多 3 次，异常记录可查、可重试；</li><li>续充申请、审核、拒绝、失效和预算恢复规则生效；</li><li>活动结束或取消后停止新下发，但已成功下发线索仍正常结算；</li><li>费用列表、详情、导出和经销商端展示一致；</li><li>年度价格及现有活动费用、台账、权限和导出流程不回归受损。</li></ul></article></main><footer>天网经销商报名系统 · 费用与线索预算方案</footer></body></html>

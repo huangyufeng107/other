@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>天网经销商报名系统按线索计费确认稿</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #65718a;
+      --line: #e4e9f2;
+      --blue: #2458d3;
+      --blue-soft: #eef4ff;
+      --green: #18794e;
+      --green-soft: #eaf7f0;
+      --amber: #965b00;
+      --amber-soft: #fff5df;
+      --surface: #fff;
+      --canvas: #f4f6fa;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font: 15px/1.75 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .hero {
+      color: #fff;
+      background: linear-gradient(125deg, #163a91, #2864dc 60%, #4c82eb);
+      padding: 46px 24px 40px;
+    }
+    .hero-inner, main, footer { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+    .eyebrow { margin: 0 0 9px; color: #d6e3ff; font-size: 13px; letter-spacing: .08em; }
+    h1 { max-width: 800px; margin: 0; font-size: clamp(27px, 4vw, 38px); line-height: 1.3; letter-spacing: .01em; }
+    .subtitle { margin: 14px 0 0; color: #e6edff; font-size: 15px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .chip { padding: 4px 11px; border: 1px solid #ffffff55; border-radius: 999px; color: #f3f6ff; font-size: 12px; }
+    main { padding: 28px 0 54px; }
+    .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; align-items: start; }
+    aside {
+      position: sticky; top: 18px; padding: 17px 14px; border: 1px solid var(--line);
+      border-radius: 14px; background: var(--surface); box-shadow: 0 5px 18px #1d31500a;
+    }
+    aside strong { display: block; margin: 0 8px 8px; font-size: 13px; }
+    aside a { display: block; padding: 6px 8px; border-radius: 7px; color: #53617a; text-decoration: none; font-size: 13px; }
+    aside a:hover { background: var(--blue-soft); color: var(--blue); }
+    article { min-width: 0; }
+    section, .intro {
+      margin-bottom: 18px; padding: 25px 28px; border: 1px solid var(--line); border-radius: 15px;
+      background: var(--surface); box-shadow: 0 5px 18px #1d31500a;
+    }
+    h2 { margin: 0 0 17px; font-size: 21px; line-height: 1.4; }
+    h3 { margin: 23px 0 9px; font-size: 16px; line-height: 1.5; }
+    h3:first-child { margin-top: 0; }
+    p { margin: 8px 0; }
+    ul, ol { margin: 8px 0 8px 1.25em; padding: 0; }
+    li { margin: 5px 0; padding-left: 2px; }
+    .intro { border-left: 4px solid var(--blue); }
+    .intro p:last-child { margin-bottom: 0; }
+    .decision-grid { display: grid; gap: 13px; }
+    .decision {
+      padding: 18px 19px; border: 1px solid #f0d79f; border-radius: 12px;
+      background: linear-gradient(110deg, var(--amber-soft), #fff 72%);
+    }
+    .decision h3 { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 9px; }
+    .badge { flex: 0 0 auto; align-self: start; padding: 2px 9px; border-radius: 999px; background: #ffebbd; color: var(--amber); font-size: 12px; font-weight: 600; }
+    .ask { margin-top: 11px; color: #684200; font-weight: 650; }
+    .confirmed { padding: 14px 17px; border-radius: 10px; background: var(--green-soft); color: #24543d; }
+    .small-note { color: var(--muted); font-size: 13px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td { padding: 12px 13px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f6f8fc; color: #48556e; font-size: 13px; font-weight: 650; }
+    tr:last-child td { border-bottom: 0; }
+    td:first-child { width: 23%; font-weight: 600; }
+    .status { display: inline-block; padding: 1px 8px; border-radius: 999px; background: var(--blue-soft); color: #2453b9; font-size: 12px; white-space: nowrap; }
+    .callout { margin-top: 15px; padding: 13px 15px; border-radius: 9px; background: #f4f7fc; color: #45536c; }
+    .response { padding: 16px 18px; border: 1px dashed #aabce4; border-radius: 10px; background: #f7f9ff; }
+    .response code { color: #204ba8; font-family: inherit; font-weight: 650; }
+    footer { padding: 0 0 28px; color: var(--muted); font-size: 12px; text-align: center; }
+    @media (max-width: 800px) {
+      .layout { display: block; }
+      aside { position: static; display: flex; flex-wrap: wrap; gap: 2px; margin-bottom: 16px; }
+      aside strong { width: 100%; }
+      section, .intro { padding: 21px 19px; }
+    }
+    @media print {
+      body { background: #fff; font-size: 11pt; }
+      .hero { padding: 25px 0; background: #fff; color: #15213b; border-bottom: 2px solid #2458d3; }
+      .eyebrow, .subtitle, .chip { color: #43516c; }
+      .chip { border-color: #b9c4d8; }
+      main, .hero-inner, footer { width: 100%; }
+      .layout { display: block; }
+      aside { display: none; }
+      section, .intro { box-shadow: none; break-inside: avoid; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">业务规则确认 · 供运营审阅</p>
+      <h1>天网经销商报名系统<br>按线索计费与预算功能</h1>
+      <p class="subtitle">业务确认稿</p>
+      <div class="hero-meta">
+        <span class="chip">范围：计费、预算、续充与上游线索校验</span>
+        <span class="chip">状态：待运营确认重点规则</span>
+        <span class="chip">版本：讨论稿</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="layout">
+      <aside aria-label="页面目录">
+        <strong>本页目录</strong>
+        <a href="#purpose">功能目标</a>
+        <a href="#decisions">运营重点确认</a>
+        <a href="#rules">当前确认口径</a>
+        <a href="#pages">页面范围</a>
+        <a href="#technical">待技术评审</a>
+        <a href="#reply">确认回复方式</a>
+      </aside>
+
+      <article>
+        <div class="intro" id="purpose">
+          <h2>确认说明</h2>
+          <p>本稿用于确认按线索计费活动的业务规则和运营操作方式。重点待确认事项单独列出；其余内容是根据前期讨论整理的当前口径，请运营核对。上游接口和系统实现细节列在最后，留待技术评审。</p>
+        </div>
+
+        <section id="decisions">
+          <h2>一、请运营重点确认的业务规则</h2>
+          <div class="decision-grid">
+            <div class="decision">
+              <h3>1. 活动总预算是否由活动内所有媒体共用 <span class="badge">请确认</span></h3>
+              <p><strong>建议口径：</strong>经销商报名按线索计费活动时填写一笔活动总预算。活动中的各媒体共用这笔预算，但按各自的线索单价分别计费，扣费都从同一活动余额中扣除。预算不足以支付下一条线索时，暂停该经销商在此活动下所有媒体的新线索下发；续充金额也加入活动总预算。</p>
+              <p class="ask">请确认：是否采用“一笔活动总预算，由活动内所有媒体共用”？</p>
+            </div>
+            <div class="decision">
+              <h3>2. 已报名活动的线索单价采用哪种规则 <span class="badge">请确认</span></h3>
+              <p>请在以下两种方式中选择。两种方式的核心区别是：活动运营期间调整媒体价格后，已经审核通过的报名是否跟着变价。</p>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>方案</th><th>规则说明</th><th>业务与系统影响</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td>方案 A：报名审核通过时锁价</td>
+                      <td>报名审核通过时，保存当时适用于该报名的媒体线索单价。此后该活动的线索均按保存的价格计费；媒体价格配置更新只影响之后审核通过的报名。</td>
+                      <td>经销商活动期间单价稳定，账单容易核对；系统需在审核通过时保存价格快照，改造相对简单。</td>
+                    </tr>
+                    <tr>
+                      <td>方案 B：活动期间动态取最新价</td>
+                      <td>每条线索成功下发时，根据当时生效的媒体价格配置取价。同一经销商、同一活动在不同时间可能使用不同单价。</td>
+                      <td>运营调价能较快作用于存量报名；系统需记录每条扣费所用的价格版本和生效时间，并处理价格变更、账单追溯及经销商核对，改造和运营对账复杂度更高。</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="ask">请确认：选择方案 A（报名审核通过时锁价），还是方案 B（活动期间动态取最新价）？</p>
+            </div>
+            <div class="decision">
+              <h3>3. 初始预算由经销商报名时填写 <span class="badge">请确认</span></h3>
+              <p><strong>建议口径：</strong>总部发布活动后，经销商报名时填写活动总预算；运营在现有“活动报名管理”中审核报名和预算。审核通过后预算生效，不再由总部人员通过“编辑费用”入口填写初始预算。</p>
+              <p class="ask">请确认：是否由经销商报名时填写初始预算，并由运营随报名一并审核？</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="rules">
+          <h2>二、当前确认口径，请运营核对</h2>
+          <div class="confirmed"><strong>以下内容按前期讨论整理为当前规则。</strong>若有不同意见，请直接指出对应条目及建议修改内容。</div>
+
+          <h3>4. 媒体、设备类型与价格配置</h3>
+          <ul>
+            <li>“城市级别设置”继续维护城市与媒体对应的城市等级。</li>
+            <li>“媒体价格设置”维护媒体年度价格；按线索计费时，维护各城市等级对应的线索单价。</li>
+            <li>设备类型增加“按线索计费”选项，并沿用现有设备类型字典。</li>
+            <li>创建活动时选择设备类型，联动媒体列表；媒体列表增加设备类型展示。</li>
+            <li>按线索计费的媒体单价必须大于 0，最多保留两位小数；其他设备类型沿用现有逻辑。</li>
+          </ul>
+
+          <h3>5. 活动日期与计费期间</h3>
+          <ul>
+            <li>活动只记录开始日期和结束日期，使用北京时间（UTC+8）。</li>
+            <li>按自然日计算，开始日和结束日都计入。</li>
+            <li>年度价格折算始终按 365 天计算。</li>
+            <li>活动不允许跨年度。</li>
+          </ul>
+
+          <h3>6. 上游资格查询与下发规则</h3>
+          <ul>
+            <li>上游查询提供经销商编号、线索实际下发时间和媒体信息。</li>
+            <li>没有本系统活动配置时，由上游系统自行决定是否下发。</li>
+            <li>存在本系统管理的活动，但资格校验异常或条件不满足时，返回“禁止下发”。</li>
+            <li>预算足以支付该媒体一条线索时允许下发；余额不足时禁止下发。</li>
+            <li>活动预算不足时，暂停该经销商该活动下所有媒体的新线索下发。已成功下发的线索仍按规则结算。</li>
+          </ul>
+
+          <h3>7. 线索回传与扣费</h3>
+          <ul>
+            <li>上游成功和失败回传均须包含媒体信息；成功线索按活动报名审核通过时锁定的单价扣费。</li>
+            <li>回传失败时不扣费，记录固定失败原因及补充说明。</li>
+            <li>每条线索须有唯一编号；同一线索重复回传只能成功扣费一次。</li>
+            <li>扣费资格校验与余额扣减须作为原子操作。</li>
+            <li>每条线索先四舍五入到分，再汇总金额；系统内部金额保留两位小数。</li>
+          </ul>
+
+          <h3>8. 续充申请与审核</h3>
+          <ul>
+            <li>经销商可在预算不足前提交续充申请。</li>
+            <li>申请金额必须大于 0，最多保留两位小数；不设置最低或最高金额，由运营审核决定。</li>
+            <li>同一活动只能有一笔待审核续充申请。</li>
+            <li>经销商提交后不能撤回或修改；如需调整，由运营拒绝后重新申请。</li>
+            <li>运营不能直接修改申请金额；拒绝时须填写拒绝原因，并可补充说明。</li>
+            <li>审核通过后，申请金额立即增加活动可用预算，并恢复线索下发资格。</li>
+            <li>活动结束或取消时，自动关闭待审核续充申请。</li>
+            <li>沿用现有活动费用管理权限；完整保留操作记录。</li>
+            <li>经销商在“我的天网活动”查看预算状态、续充申请状态及审核结果，不新增通知渠道。</li>
+          </ul>
+
+          <h3>9. 结束、取消与退款记录</h3>
+          <ul>
+            <li>活动结束、取消或提前终止后，停止新的线索下发；已成功下发的线索仍按规则结算。</li>
+            <li>结束时记录应退费金额和已退费金额，不接入实际退款功能。</li>
+            <li>续充通过后增加累计预算；现有“存款金额”调整显示为“累计预算”。</li>
+            <li>可用预算按“累计预算－实际消耗”计算。</li>
+          </ul>
+        </section>
+
+        <section id="pages">
+          <h2>三、页面范围建议</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>页面/功能</th><th>处理方式</th><th>主要内容</th></tr></thead>
+              <tbody>
+                <tr><td>城市级别设置</td><td><span class="status">复用</span></td><td>继续维护城市与媒体等级关系。</td></tr>
+                <tr><td>媒体价格设置</td><td><span class="status">调整</span></td><td>增加按线索计费配置及各等级线索单价。</td></tr>
+                <tr><td>活动发布</td><td><span class="status">调整</span></td><td>选择设备类型；联动并展示媒体列表。</td></tr>
+                <tr><td>活动报名管理</td><td><span class="status">调整</span></td><td>展示并审核经销商报名填写的活动总预算。</td></tr>
+                <tr><td>活动费用管理</td><td><span class="status">调整</span></td><td>展示累计预算、实际消耗、可用预算。</td></tr>
+                <tr><td>续充申请审核</td><td><span class="status">新增</span></td><td>独立审核页面；按状态分标签，默认进入“待审核”。</td></tr>
+                <tr><td>费用详情</td><td><span class="status">调整</span></td><td>展示必要汇总、扣费异常记录，并支持人工重试。</td></tr>
+                <tr><td>活动报名台账</td><td><span class="status">复用</span></td><td>延用现有台账，不新增独立线索明细导出。</td></tr>
+                <tr><td>我的天网活动</td><td><span class="status">调整</span></td><td>展示预算状态、费用信息、续充申请入口及结果。</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout"><strong>重试规则：</strong>扣费自动重试最多 3 次；仍失败则进入“待人工处理”。人工重试最多 3 次；仍失败则继续保留该状态。自动和人工重试均沿用原始金额及规则，运营不能修改金额。</div>
+        </section>
+
+        <section id="technical">
+          <h2>四、待技术评审事项</h2>
+          <p>以下是开发和上游对接事项，不改变已确认的业务规则：</p>
+          <ol>
+            <li>上游接口字段、错误码、超时和重试约定。</li>
+            <li>线索唯一编号的来源和唯一范围。</li>
+            <li>逐条扣费记录如何关联现有费用数据和台账。</li>
+            <li>自动、人工重试任务的调度和异常恢复机制。</li>
+            <li>现有费用字段与预算及退款字段的具体存储映射。</li>
+          </ol>
+        </section>
+
+        <section id="reply">
+          <h2>五、请运营回复确认</h2>
+          <p>请重点确认以下三项：</p>
+          <ol>
+            <li>活动内所有媒体是否共用一笔活动总预算？</li>
+            <li>已审核通过的报名采用方案 A（审核通过时锁价），还是方案 B（活动期间动态取最新价）？</li>
+            <li>是否由经销商报名时填写初始预算，并由运营随报名一并审核？</li>
+          </ol>
+          <div class="response">
+            <p>如三项建议口径均同意，可回复：</p>
+            <code>三项均确认，其他当前确认口径无异议。</code>
+            <p class="small-note">如需修改，请注明对应条目和建议口径。</p>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer>天网经销商报名系统 · 按线索计费与预算功能业务确认稿</footer>
+</body>
+</html>
