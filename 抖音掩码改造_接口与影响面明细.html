@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>抖音掩码改造 · 接口与影响面明细</title>
+<style>
+:root{
+  --ink:#0f172a;--ink2:#334155;--muted:#64748b;--line:#e6ebf3;--line2:#eef2f7;
+  --brand:#155eef;--brand-soft:#eff4ff;--bg:#f6f8fb;--card:#ffffff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:400 15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{display:grid;grid-template-columns:248px minmax(0,1fr);gap:36px;max-width:1220px;margin:0 auto;padding:34px 28px 80px}
+aside{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow-y:auto;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 12px}
+aside .nav-h{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.08em;padding:0 8px 10px}
+aside a{display:block;padding:5px 10px;border-radius:7px;color:var(--ink2);text-decoration:none;font-size:13px;line-height:1.5}
+aside a:hover{background:var(--brand-soft);color:var(--brand)}
+aside a.sub{padding-left:22px;font-size:12.5px;color:var(--muted)}
+aside a.active{background:var(--brand-soft);color:var(--brand);font-weight:500}
+main{min-width:0}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 30px;margin-bottom:22px}
+.kicker{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--brand);
+  background:var(--brand-soft);border-radius:999px;padding:3px 10px;margin-bottom:12px}
+.hero h1{margin:0 0 10px;font-size:25px;line-height:1.4;font-weight:600;letter-spacing:-.2px}
+.hero .tagline{margin:0;color:var(--muted);font-size:13.5px;line-height:1.8}
+.hero .tagline b{color:var(--ink2);font-weight:500}
+.section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 30px 28px;margin-bottom:18px}
+h2{margin:6px 0 16px;font-size:19px;font-weight:600;letter-spacing:-.1px;padding-bottom:12px;border-bottom:1px solid var(--line2)}
+h3{margin:26px 0 12px;font-size:15.5px;font-weight:600;color:#0b3a8f}
+h4{margin:20px 0 10px;font-size:14px;font-weight:600;color:var(--ink2)}
+p{margin:12px 0;color:var(--ink2)}
+strong{color:var(--ink);font-weight:600}
+ul,ol{margin:12px 0;padding-left:22px;color:var(--ink2)}
+li{margin:6px 0}
+li::marker{color:#9aa8bd}
+a{color:var(--brand)}
+code{background:#f1f5fb;border:1px solid #e3eaf5;border-radius:5px;padding:1px 5px;
+  font:400 12.5px/1.5 "SF Mono",Menlo,Consolas,monospace;color:#1e3a8a}
+pre{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.5px;line-height:1.6}
+pre code{background:none;border:0;color:inherit;padding:0}
+blockquote{margin:16px 0;padding:13px 16px;background:#f8fbff;border:1px solid #dbeafe;border-left:3px solid #93c5fd;border-radius:0 9px 9px 0}
+blockquote p{margin:0;color:#1e40af;font-size:13.5px;line-height:1.8}
+blockquote p+p{margin-top:8px}
+blockquote strong{color:#0b3a8f}
+blockquote ol,blockquote ul{margin:6px 0;color:#1e40af}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:16px 0;background:#fff}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line2);vertical-align:top;line-height:1.65}
+th{background:#f8fafc;color:#475569;font-weight:600;white-space:nowrap;position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fbfdff}
+hr{border:0;border-top:1px solid var(--line2);margin:26px 0}
+/* 自绘时序图（离线，无 CDN） */
+.seq-wrap{margin:16px 0;padding:18px 14px;background:#fbfdff;border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+.seq{position:relative;min-width:620px;font-size:12.5px;color:var(--ink2)}
+.seq-head{position:relative;height:40px;margin-bottom:6px}
+.seq-p{position:absolute;transform:translateX(-50%);white-space:nowrap;background:#eff4ff;border:1px solid #c7d7f5;
+  color:#0b3a8f;font-weight:600;border-radius:8px;padding:5px 13px;line-height:1.4}
+.seq-body{position:relative}
+.seq-life{position:absolute;top:0;bottom:4px;width:0;border-left:1.5px dashed #d7e0ee}
+.seq-row{position:relative;height:46px}
+.seq-row.auto{height:auto;padding:9px 0}
+.seq-link{position:absolute;height:46px}
+.seq-link::before{content:"";position:absolute;left:0;right:0;top:30px;border-top:2px solid #94a3b8}
+.seq-link.dashed::before{border-top-style:dashed}
+.seq-link.L2R::after,.seq-link.R2L::after{content:"";position:absolute;top:25.5px;border:5px solid transparent}
+.seq-link.L2R::after{right:-2px;border-left:9px solid #94a3b8}
+.seq-link.R2L::after{left:-2px;border-right:9px solid #94a3b8}
+.seq-tag{position:absolute;left:50%;transform:translateX(-50%);top:2px;white-space:nowrap;
+  font-size:12.5px;color:#1e3a8a;background:#fbfdff;padding:0 6px;border-radius:6px}
+.seq-tag b{color:#155eef;font-weight:600;margin-right:4px}
+.seq-self{display:block;width:max-content;max-width:230px;transform:translateX(-50%);
+  white-space:normal;text-align:center;background:#f8fafc;border:1px solid #e2e8f0;
+  border-radius:7px;padding:3px 10px;color:var(--ink2);font-size:12px;line-height:1.55}
+.seq-self b{color:#155eef;font-weight:600;margin-right:4px}
+.seq-note{display:block;width:max-content;max-width:380px;transform:translateX(-50%);
+  background:#fffbeb;border:1px solid #fde68a;color:#92400e;
+  border-radius:8px;padding:7px 12px;font-size:12.5px;line-height:1.6;text-align:center}
+.top{position:fixed;right:26px;bottom:26px;width:40px;height:40px;border-radius:50%;background:var(--card);
+  border:1px solid var(--line);box-shadow:0 2px 10px rgba(15,23,42,.08);color:var(--muted);text-decoration:none;
+  display:flex;align-items:center;justify-content:center;font-size:15px}
+.top:hover{color:var(--brand);border-color:#c7d7f5}
+@media (max-width:1020px){
+  .wrap{grid-template-columns:1fr;padding:20px 16px 70px;gap:18px}
+  aside{position:static;max-height:none;order:-1}
+  aside .nav-body{display:flex;flex-wrap:wrap;gap:2px}
+  aside a{font-size:12px;padding:4px 8px}
+  aside a.sub{display:none}
+  .section{padding:20px 18px 22px}
+  .hero{padding:22px 20px}
+  .hero h1{font-size:21px}
+}
+@media print{
+  body{background:#fff} aside,.top{display:none} .wrap{display:block;max-width:none;padding:0}
+  .section,.hero{border:0;padding:0;margin:0 0 18px;break-inside:auto}
+  h2{break-after:avoid} table{font-size:11px;min-width:0} .tbl{overflow:visible;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside>
+    <div class="nav-h">目录</div>
+    <div class="nav-body"><a href="#sec-1">一、两类线索，两条链路</a>
+<a href="#sec-2">二、留资线索链路：改造范围</a>
+<a href="#sec-3" class="sub">2.0 先看这张表：同一个东西，在各处叫什么</a>
+<a href="#sec-4" class="sub">2.1 车巴巴（媒体接入层）</a>
+<a href="#sec-5" class="sub">2.2 线索中心 · 线索接入管理（留资出口，改造最重）</a>
+<a href="#sec-6" class="sub">2.3 厂商系统 COC / NEV（不在我方，仅契约）</a>
+<a href="#sec-7" class="sub">2.4 撞重补全：工程前提、审计约束与自测</a>
+<a href="#sec-8" class="sub">2.5 人工跟进拿到明文之后：录入、验证、回写</a>
+<a href="#sec-9">三、培育线索链路：改造范围</a>
+<a href="#sec-10" class="sub">3.1 短信：已确认发不出去，影响六处</a>
+<a href="#sec-11">四、非线索模块：号码依赖影响面</a>
+<a href="#sec-12" class="sub">4.1 板块全景</a>
+<a href="#sec-13" class="sub">4.2 质检 / 录音抽检</a>
+<a href="#sec-14" class="sub">4.3 报表 / 看板</a>
+<a href="#sec-15" class="sub">4.4 试驾 / 排程</a>
+<a href="#sec-16" class="sub">4.5 配置器群</a>
+<a href="#sec-17" class="sub">4.6 其他零散页</a>
+<a href="#sec-18" class="sub">4.7 影响面结论（全系统）</a>
+<a href="#sec-19">五、待确认事项：逐条背景与原型依据</a>
+<a href="#sec-20">附录一：原型证据</a>
+<a href="#sec-21">附录二：全量扫描数据（480 页，84 页命中）</a></div>
+  </aside>
+  <main>
+    <div class="hero">
+      <span class="kicker">研发实施辅材 · 非评审材料</span>
+      <h1>抖音掩码改造 · 接口与影响面明细</h1>
+      <p class="tagline"><b>用途</b> 查接口字段、原型证据、待确认事项现状依据、480 页扫描台账 ｜ <b>版本</b> v1.8.11 ｜ 2026-10-23 · 口径冲突时以《开发交底总方案》为准</p>
+    </div>
+    <div class="section"><blockquote>
+<p><strong>本文档是《抖音掩码改造_开发交底总方案》的辅材，不是评审材料。</strong>
+用途：查具体接口与字段、逐页原型证据、待确认事项的现状依据、480 页扫描台账。
+<strong>口径与交底总方案冲突时，一律以交底总方案为准。</strong> 与主文档重复的方案表述已删除，只留一行指针指回对应章节。</p>
+</blockquote>
+<ul>
+<li><strong>版本</strong>：v1.8.11 ｜ 2026-10-23 ｜ 辅材（本版：N1 改写为「掩码线索的报文形态」并给出三种形态对应的工作量；上一版与主文档对齐 9 处：CF5 升 P0、验证不限门店、<code>mask_phone</code> 定 32、候选外呼改策略开关、来源枚举对齐、补首触归因与关键行为提醒、补空值三态映射与历史表结构、CB1 指向修正、LC-B5 与 N2 区分）</li>
+</ul>
+<hr>
+</div><div class="section"><h2 id="sec-1">一、两类线索，两条链路</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>留资线索</th>
+<th>培育线索</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>是什么</td>
+<td>媒体渠道产生的原始留资</td>
+<td>NEV 中台把留资线索<strong>去重</strong>后，挑出需要 DCC 总部培育的那部分，转成的线索</td>
+</tr>
+<tr>
+<td>从哪来</td>
+<td>车巴巴承接媒体接口后下发</td>
+<td>NEV 中台转化后推送</td>
+</tr>
+<tr>
+<td>经过谁</td>
+<td>车巴巴 → 线索中心（接入层）→ 主机厂 COC / NEV</td>
+<td>NEV 中台 → DCC 培育</td>
+</tr>
+<tr>
+<td>去向</td>
+<td>主机厂线索池并去重（不在我方）</td>
+<td>AI 外呼 / 人工客服 → 下发中台或总部客服</td>
+</tr>
+<tr>
+<td>我方角色</td>
+<td><strong>中转与校验</strong>（在网检测、字段校验、下发队列）</td>
+<td><strong>执行方</strong>（判重、外呼、跟进、质检、回写）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>留资线索</strong></p>
+<div class="seq-wrap"><div class="seq" style="min-width:750px"><div class="seq-head"><div class="seq-p" style="left:10.0000%">各媒体渠道</div><div class="seq-p" style="left:30.0000%">字节系入口</div><div class="seq-p" style="left:50.0000%">车巴巴</div><div class="seq-p" style="left:70.0000%">线索中心·接入管理</div><div class="seq-p" style="left:90.0000%">厂商系统（COC/NEV）</div></div><div class="seq-body"><i class="seq-life" style="left:10.0000%"></i><i class="seq-life" style="left:30.0000%"></i><i class="seq-life" style="left:50.0000%"></i><i class="seq-life" style="left:70.0000%"></i><i class="seq-life" style="left:90.0000%"></i><div class="seq-row"><div class="seq-link L2R" style="left:10.0000%;width:40.0000%"><span class="seq-tag"><b>1</b>线索报文（手机号必填，明文）</span></div></div><div class="seq-row"><div class="seq-link L2R" style="left:30.0000%;width:20.0000%"><span class="seq-tag"><b>2</b>线索报文（掩码号 + 加密标识 + 原线索ID）</span></div></div><div class="seq-row auto"><div class="seq-note" style="margin-left:max(40.0000%,130px)">字节系入口 7 条：头条MAPI / 懂车云店4个抖音号 / 东风南方抖音号 / 启辰抖店</div></div><div class="seq-row auto"><div class="seq-self" style="margin-left:max(50.0000%,130px)"><b>3</b>号码强校验 → 查重(extsystem_clue_id) → SC映射 → 跨城分派 → 一对多拆分</div></div><div class="seq-row"><div class="seq-link L2R" style="left:50.0000%;width:20.0000%"><span class="seq-tag"><b>4</b>车巴巴线索接收接口 A/B</span></div></div><div class="seq-row auto"><div class="seq-self" style="margin-left:max(70.0000%,130px)"><b>5</b>联系电话强校验 → 在网状态查询（空号缓存48h）</div></div><div class="seq-row auto"><div class="seq-self" style="margin-left:max(70.0000%,130px)"><b>6</b>待下发队列</div></div><div class="seq-row"><div class="seq-link L2R" style="left:70.0000%;width:20.0000%"><span class="seq-tag"><b>7</b>厂商系统接收接口</span></div></div><div class="seq-row auto"><div class="seq-self" style="margin-left:max(90.0000%,130px)"><b>8</b>主机厂线索池并去重</div></div></div></div></div>
+
+<p><strong>培育线索</strong></p>
+<div class="seq-wrap"><div class="seq" style="min-width:620px"><div class="seq-head"><div class="seq-p" style="left:12.5000%">NEV 中台</div><div class="seq-p" style="left:37.5000%">DCC 培育</div><div class="seq-p" style="left:62.5000%">AI 外呼 / 人工客服</div><div class="seq-p" style="left:87.5000%">坐席·任务跟进</div></div><div class="seq-body"><i class="seq-life" style="left:12.5000%"></i><i class="seq-life" style="left:37.5000%"></i><i class="seq-life" style="left:62.5000%"></i><i class="seq-life" style="left:87.5000%"></i><div class="seq-row auto"><div class="seq-self" style="margin-left:max(12.5000%,130px)"><b>1</b>留资线索去重 → 判定是否需 DCC 培育 → 转培育线索</div></div><div class="seq-row"><div class="seq-link L2R" style="left:12.5000%;width:25.0000%"><span class="seq-tag"><b>2</b>推送培育线索</span></div></div><div class="seq-row auto"><div class="seq-note" style="margin-left:max(37.5000%,130px)">入口「NEV 总部培育线索接收」部署在本系统内</div></div><div class="seq-row auto"><div class="seq-self" style="margin-left:max(37.5000%,130px)"><b>3</b>解析 smartCode → 空号检测（缓存15天）→ 入库</div></div><div class="seq-row"><div class="seq-link L2R" style="left:37.5000%;width:25.0000%"><span class="seq-tag"><b>4</b>AI 外呼 / 批量下发人工客服</span></div></div><div class="seq-row"><div class="seq-link L2R" style="left:62.5000%;width:25.0000%"><span class="seq-tag"><b>5</b>任务跟进</span></div></div><div class="seq-row"><div class="seq-link R2L" style="left:12.5000%;width:75.0000%"><span class="seq-tag"><b>6</b>结果回写 NEV 线索中台</span></div></div></div></div></div>
+
+<blockquote>
+<p>判断任何改造点要不要做，先对<strong>交底总方案 1.1「五条关键判据」</strong>：同一客户先后走两条链路（标识必须同口径）/ 去重在中台不在我方 / 号码两道门槛车巴巴在前 / 空号与在网是两套缓存 / 11 个入口字段叫法不一。</p>
+</blockquote>
+<hr>
+</div><div class="section"><h2 id="sec-2">二、留资线索链路：改造范围</h2>
+<p>留资链路分三段：车巴巴收（2.1）→ 线索中心校验并下发（2.2）→ 厂商系统入库（2.3）。三段都要动，其中前两段是号码闸门所在。</p>
+<h3 id="sec-3">2.0 先看这张表：同一个东西，在各处叫什么</h3>
+<p>各系统历史上各叫各的，先看这张对照表，后面遇到新名字不用再猜。概念本身（掩码号、加密标识、中间号是什么、会不会变）见<strong>交底总方案第 1 章</strong>，这里只管「字段名叫什么」。</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>说的是什么</th>
+<th>各处实际叫什么</th>
+<th>本文统一叫</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户的明文手机号</td>
+<td>接口 A <code>phone</code>、接口 B <code>contactTel</code>、东风南方 / 启辰抖店 <code>telephone</code>、懂车云店原型写「电话」、汽车之家状态回传 <code>customerPhone</code>、主库列名也是 <code>phone</code></td>
+<td><strong>主字段</strong></td>
+</tr>
+<tr>
+<td>抖音给的线索 ID</td>
+<td>接口 A <code>extsystem_clue_id</code>、接口 B <code>outSystemCluekey</code>、抖音入口 <code>id</code> 或「线索ID」、回写接口「线索外部系统线索id」、报表「NEV线索中台编码」</td>
+<td><strong>原线索 ID</strong></td>
+</tr>
+<tr>
+<td>这条线索是明文还是掩码</td>
+<td><code>phone_type</code>（A）/ <code>phoneType</code>（B）</td>
+<td><strong>号码形态</strong></td>
+</tr>
+<tr>
+<td>平台下发的 <code>*******3090</code></td>
+<td><code>mask_phone</code>（A）/ <code>maskPhone</code>（B）</td>
+<td><strong>掩码号</strong></td>
+</tr>
+<tr>
+<td>不可逆的密文</td>
+<td><code>encrypt_id</code>（A）/ <code>encryptId</code>（B）</td>
+<td><strong>加密标识</strong></td>
+</tr>
+<tr>
+<td>坐席或撞重拿到、但还没验证的明文</td>
+<td><code>candidate_phone</code></td>
+<td><strong>候选明文</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>全文就这六个中文名：主字段、原线索 ID、号码形态、掩码号、加密标识、候选明文。</p>
+<p><strong>三层名字别混</strong>：接口层是报文字段名（车巴巴 A 接口用下划线、B 接口用驼峰，两边本来就不一致）；存储层是主库列名，统一下划线（如 <code>candidate_phone</code>）；展示层是页面与报表上的中文标签。讲接口入参一律说「手机号」，讲落库与转正一律说「主字段」。</p>
+<h3 id="sec-4">2.1 车巴巴（媒体接入层）</h3>
+<h4>2.1.1 字节系入口（E1–E11，共 11 条）</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>入口</th>
+<th>号码字段</th>
+<th>线索 ID 字段</th>
+<th>号码校验</th>
+<th>下发去向</th>
+<th>原型页面</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E1</td>
+<td>字节头条 MAPI（下发每 10 分钟轮询；更新每 6 小时轮询，按 <code>clue_id</code> 与已入库线索去重）</td>
+<td><strong>两页原型均未列</strong>（示例只有姓名/省/市/经销商/车型）</td>
+<td><code>clue_id</code>（更新接口原文：按 clue_id 与已入库字节头条线索比对去重）</td>
+<td>无号码强校验</td>
+<td>车巴巴线索接收接口 B</td>
+<td>《字节头条线索下发接口》《字节头条线索更新接口》</td>
+</tr>
+<tr>
+<td>E2</td>
+<td>懂车云店 API — 广告投放抖音号</td>
+<td>「电话」</td>
+<td>「线索ID」→ <code>extsystem_clue_id</code> 查重</td>
+<td><strong>强校验：非空 + 13~19 开头 11 位</strong></td>
+<td>车巴巴线索接收接口 B</td>
+<td>《广告投放抖音号-懂车云店api线索接收接口【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>E3</td>
+<td>懂车云店 API — 日产总部抖音号</td>
+<td>「电话」</td>
+<td>同上</td>
+<td>同上</td>
+<td>接口 B（<code>pageid=rczbdyhdcyd</code>、<code>dataSource=4</code>、线索类型 <code>6-客户留资</code>）</td>
+<td>《日产总部抖音号-懂车云店api线索接收接口【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>E4</td>
+<td>懂车云店 API — 日产店端抖音号</td>
+<td>「电话」</td>
+<td>同上</td>
+<td>同上 + 分发经销商ID 强校验</td>
+<td>接口 B</td>
+<td>《日产店端抖音号-懂车云店api线索接收接口【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>E5</td>
+<td>懂车云店 API — 启辰店端抖音号</td>
+<td>「电话」</td>
+<td>同上</td>
+<td>同上 + 来源抖音号 强校验</td>
+<td>接口 B</td>
+<td>《启辰店端抖音号-懂车云店api线索接收接口【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>E6</td>
+<td>东风南方抖音号</td>
+<td><code>telephone</code></td>
+<td><code>id</code></td>
+<td>—</td>
+<td>接口 B（<code>pageid=dfnfdy</code>）</td>
+<td>《东风南方抖音号线索【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>E7</td>
+<td>启辰抖店官方店（含卡券领取）</td>
+<td><code>telephone</code></td>
+<td><code>id</code></td>
+<td>—</td>
+<td>接口 B + 车巴巴卡券领取接口（卡券「手机号码」也取 <code>telephone</code>）</td>
+<td>《启辰抖店官方店线索接收接口【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>E8</td>
+<td>日产车云店 · 店端</td>
+<td>「手机号码」<strong>必填</strong></td>
+<td>外部系统id（选填）</td>
+<td><strong>强校验：非空 + 13~19 开头 11 位</strong>（与 E2–E5 一字不差）+ 分发经销商ID 强校验</td>
+<td>接口 B</td>
+<td>《日产车云店线索接口-店端【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>E9</td>
+<td>日产车云店 · 活动对赌</td>
+<td>「手机号码」<strong>必填</strong></td>
+<td>外部系统id（选填）；专营店编码改「抖音ID」必填（11 家抖音店字典 <code>Ncluedouyin_douyinID</code>）</td>
+<td>校验「手机号码是否合法」（13~19 原文未列）；SC 指定下发、备注空时按意向城市兜底</td>
+<td>接口 B</td>
+<td>《日产车云店线索接口【逻辑流程图】-活动对赌》</td>
+</tr>
+<tr>
+<td>E10</td>
+<td>启辰车云店</td>
+<td>「手机号码」<strong>必填</strong></td>
+<td>外部系统id（选填）；<code>refer_dy_id</code> 抖音号字典匹配车系</td>
+<td>校验「手机号码是否合法」（13~19 原文未列）</td>
+<td>接口 B（<code>source=17</code> / <code>page_id=cheyundian</code>）</td>
+<td>《启辰车云店线索接口【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>E11</td>
+<td>启辰本地通车云店（车云店 MAPI 拉取）</td>
+<td><code>telephone</code>（= 上游 <code>contactTel</code>）</td>
+<td><code>clue_id</code>（= 上游 <code>outSystemCluekey</code>）</td>
+<td><strong>无入站强校验</strong>（拉取型，页内校验规则块为空；掩码拦截发生在线索中心那一层）。<strong>修订记录标注「下线接口服务」（2024-01-04），是否仍在跑待确认（N13）</strong></td>
+<td>我方主动拉取（<code>clue_source=8</code>、来源场景「私信」、<code>inteBrandID=2</code> 东风启辰）</td>
+<td>《启辰本地通车云店线索拉取接口【逻辑流程图】》</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>11 条入口按接入方式归纳为 4 个窗口（① 字节头条 MAPI；② 懂车云店线索接口 E2–E5；③ 车云店线索接口 E8–E10；④ 车云店 MAPI E11），窗口划分、现网校验强度与改造要点见<strong>交底总方案 2.1</strong>。E6 东风南方抖音号、E7 启辰抖店官方店不在四组内，同走接口 B。E11 页内无入站强校验、修订记录标注「下线接口服务」（2024-01-04），是否在跑待确认（N13）。</p>
+</blockquote>
+<h4>2.1.2 改造条目</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能</th>
+<th>现状（原型证据）</th>
+<th>原型页面</th>
+<th>需改造</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CB1</td>
+<td>各媒体渠道的线索接收接口</td>
+<td>接口 A 的 <code>phone</code>、接口 B 的 <code>contactTel</code> 均为<strong>必填</strong>参数</td>
+<td>《车巴巴线索标准接口A【逻辑流程图】》《车巴巴线索标准接口B【逻辑流程图】》</td>
+<td>见<strong>交底总方案 3.1</strong>：新增号码形态 / 掩码号 / 加密标识三个字段，主字段由「必填」改为「条件必填」</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>CB2</td>
+<td>字节系线索入口（E1–E11）</td>
+<td>一对多下发：一条线索若带多个经销商编码，会拆成多条分别下发——原型示例：1 条广州线索同时拆给广州风日 / 绿日 / 南菱 3 家店</td>
+<td>《字节头条线索下发接口【逻辑流程图】》（1发3）；《媒体线索-记录【逻辑流程图】》（1发2，2023-03-23）</td>
+<td>拆出来的每一条都必须带上<strong>同一个加密标识</strong>；否则 3 家店会把同一客户当 3 个新客户，各自跟进、重复统计</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>CB3</td>
+<td>转发下游（线索中心 / COC / 效果通）</td>
+<td>按车型、smartcode、经销商编码组装参数</td>
+<td>《车巴巴线索标准接口A【逻辑流程图】》《车巴巴线索标准接口B【逻辑流程图】》《车巴巴线索接收接口【业务流程图】》</td>
+<td>下游参数新增掩码字段；确认下游可接收主字段为空</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>CB4</td>
+<td>火山引擎线索评级</td>
+<td>用手机号 <strong>MD5</strong> 与媒体人群包匹配（场景 1–6）</td>
+<td>《车巴巴线索标准接口A【逻辑流程图】》</td>
+<td>掩码线索无法算 MD5 → 评级需替代方案</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>CB5</td>
+<td>状态回传媒体（汽车之家等）</td>
+<td>请求参数 <code>customerPhone = 手机号码</code></td>
+<td>《汽车之家线索状态同步【逻辑流程图】》</td>
+<td>改隐私号或线索 ID 映射</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>CB6</td>
+<td>专营店编码 → 城市解析</td>
+<td>已有：「城市（根据车巴巴专营店编码解析出城市中文名称写入）」</td>
+<td>《车巴巴线索标准接口A【逻辑流程图】》</td>
+<td>升级为掩码线索归属城市<strong>主来源</strong></td>
+<td>P0</td>
+</tr>
+<tr>
+<td>CB7</td>
+<td>拦截过滤</td>
+<td>IP 限频、异常昵称、测试昵称</td>
+<td>《汽车之家线索拦截查询【逻辑流程图】》</td>
+<td>基本不受影响，仅核对是否有手机维度规则</td>
+<td>仅核对</td>
+</tr>
+<tr>
+<td>CB8</td>
+<td>媒体线索记录 / 详情</td>
+<td>已有脱敏展示（示例 <code>191****1609</code>）</td>
+<td>《媒体线索-记录【逻辑流程图】》《查看详情2022》</td>
+<td>检索、导出适配</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>CB9</td>
+<td><strong>懂车云店 API 号码强校验</strong></td>
+<td>「【强校验】电话是否为空，且是否符合号段 13~19 开头的 11 位数字为正常」——E2–E5 四入口与 E8 车云店店端完全一致（同款强校验共 5 处）；E9 / E10 校验「手机号码是否合法」；E11 拉取型无入站强校验</td>
+<td>《广告投放抖音号-懂车云店api线索接收接口》等四页</td>
+<td><strong>阻断级</strong>：掩码号必然失败 → 按「是否字节线索」分流校验，掩码线索改校验「掩码号非空 + 后 4 位纯数字 + 加密标识非空 + 原线索ID 非空」</td>
+<td>P0（最前）</td>
+</tr>
+<tr>
+<td>CB10</td>
+<td>懂车云店 API 异常数据监控</td>
+<td>每日 10 点扫 T-1 未生成线索的异常数据，邮件预警；异常原因含「手机号码不合法」</td>
+<td>《懂车云店api线索监控【逻辑流程图】》</td>
+<td>掩码上线后会每天误报 → 异常原因拆分「号码格式不合法」与「掩码线索待补全」，后者不进预警</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>CB11</td>
+<td>启辰抖店卡券领取</td>
+<td>卡券接口「手机号码」= <code>telephone</code>，<code>source</code> 固定 4、<code>sms_release</code> 固定 1</td>
+<td>《启辰抖店官方店线索接收接口【逻辑流程图】》</td>
+<td>掩码线索无法领券（核销靠号码）→ 改按加密标识或原线索ID</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>CB12</td>
+<td>号码归属地字段</td>
+<td>E2–E5 请求参数含「<strong>号码归属地</strong>」「意向城市」「意向省份」三项</td>
+<td>《广告投放抖音号-懂车云店api线索接收接口》《日产懂车云店数据分流【逻辑流程图】》</td>
+<td>「号码归属地」失效，「意向城市/意向省份」仍有效 → 作归属城市第二顺位（见 LC-B5）</td>
+<td>P0</td>
+</tr>
+</tbody>
+</table></div>
+<h4>2.1.3 CB1 落地细则：错误码、例外报文、存储与灰度</h4>
+<blockquote>
+<p>三个字段怎么传、分场景怎么必填、老调用方为何零改造，<strong>交底总方案 3.1</strong> 已完整定义，本节不重复。这里只补三件主文档没写、开发实现要用的东西：错误码全集、声明掩码却带明文的报文怎么处置、存储索引与灰度验收。</p>
+</blockquote>
+<p><strong>① 错误码全集（主文档 3.1 只列前三个，此处补全）</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>错误码</th>
+<th>触发条件</th>
+<th>返回提示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>手机号为空，且号码形态≠2</td>
+<td>手机号必填；掩码线索请改传号码形态=2，并同时携带掩码号 + 加密标识 + 原线索 ID</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>号码形态=2，但掩码号不符合平台下发形态（正则按真实样本锁定，示例 <code>^\*+\d{4}$</code>）</td>
+<td>掩码号格式不正确</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>号码形态=2，但缺加密标识</td>
+<td>加密标识不能为空</td>
+</tr>
+<tr>
+<td>1004</td>
+<td>号码形态=2，但缺原线索 ID</td>
+<td>原线索 ID 不能为空</td>
+</tr>
+<tr>
+<td>1005</td>
+<td>同一加密标识 + 同一专营店重复推送</td>
+<td>返回成功 + 已有线索 ID（幂等，不报错）</td>
+</tr>
+<tr>
+<td>1006</td>
+<td>该入口号码形态=2 灰度未开放</td>
+<td>该入口暂未开放掩码线索受理</td>
+</tr>
+<tr>
+<td>1007</td>
+<td>号码形态≠2，却携带了掩码号或加密标识</td>
+<td>明文线索不应携带掩码号、加密标识（防脏数据落库，与主文档 3.1 的分场景必填规则一致）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>研发实现时，上表的「号码形态」对应 <code>phone_type</code>（接口 B 为 <code>phoneType</code>），「手机号」对应报文的 <code>phone</code>（接口 B 为 <code>contactTel</code>）。错误码文案是给调用方看的，所以用中文；条件表达式在代码里用字段名。</p>
+</blockquote>
+<p><strong>② 例外：声明是掩码线索，却同时传了 11 位明文号</strong></p>
+<p>这种报文一定出现——上游复用一个 DTO、过渡期平台同时下发明文与掩码、链路中途补全真实号码。<strong>不能拒收，也不能采信。</strong></p>
+<p>号码形态是调用方对「这条线索的号码以哪边为准」的声明。声明为 2，等于调用方自己说：真实号码在平台那边，我传的这个字段不作数。</p>
+<p>一旦采信这个明文号，同一条线索就有两个号码源，而这两个源的可信度并不一样。</p>
+<p><strong>这里要特别注意：密文同源已经确认（2026-10-17），所以问题不是「对不上」，是「不敢信」。</strong> 同源能保证的是——同一个号码，无论谁来算、什么时候算，算出来都是同一个加密标识。它保证不了这个随报文塞进来的 11 位号码本身是对的：可能是上游过渡期为了过校验凑的，可能是占位号，可能是客户早就停用的旧号。</p>
+<p>采信它有三个后果：</p>
+<ul>
+<li>坐席照着拨，打给的是不确定的人。这个号码没经过平台背书，也没做过在网与空号校验</li>
+<li>平台后续正式转明带回真号时，如果与它不一致，主字段会被覆盖一次，前一次通话记录就挂在错的号码上，对账时对不上</li>
+<li>一部分老旧模块仍按手机号判重。主字段一有值，这些模块就绕过加密标识走老路，判重口径重新分裂成两套</li>
+</ul>
+<p>所以处置不是「怕撞不上」，是「等它被验证过再用」。</p>
+<p>处置分五层，一层一层定清楚：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>层</th>
+<th>处置</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>校验</td>
+<td>只校验三件套，<strong>不校验明文号格式</strong></td>
+<td>不因明文号非法而拒收，兼容上游现状</td>
+</tr>
+<tr>
+<td>落库</td>
+<td>主字段落 NULL；明文值转存候选明文，来源记 <strong>1（报文明文）</strong>、验证状态=0。来源只说明号码从哪来，不决定落在哪一列。该列不参与判重、外呼、展示等业务动作，录入与转正规则见 2.5</td>
+<td>主字段保持干净，信息不丢</td>
+</tr>
+<tr>
+<td>判重</td>
+<td>只用加密标识 + 专营店，<strong>不读候选明文</strong></td>
+<td>与纯掩码线索同一套键，不分裂</td>
+</tr>
+<tr>
+<td>展示</td>
+<td>显示掩码号；候选明文仅在有权限的详情页以「待验证」标识展示</td>
+<td>防坐席照着打</td>
+</tr>
+<tr>
+<td>外呼</td>
+<td>走隐私号双轨，<strong>默认不拨候选明文</strong>；按品牌/门店的策略开关放开后可拨，并打标留痕（开关默认关，见交底总方案 3.3 责任归属）</td>
+<td>号码未验证，拨出去可能不是本人；放开属业务决策，所以做成开关而不是写死禁止</td>
+</tr>
+</tbody>
+</table></div>
+<p>候选明文只有一个转正条件：到店转明 / 成交回传的<strong>正式链路</strong>带回明文并核对一致，才写进主字段，同时把号码来源置为 2，留审计痕迹。转正前不参与任何业务动作。</p>
+<blockquote>
+<p>还有另一条转明路径——跨渠道撞重后，从对方的明文线索补全号码，见 <strong>2.4</strong>。两条路径的号码来源取值不同（正式链路 2 / 撞重补全 3），审计时能分得开。</p>
+</blockquote>
+<p>不做阻断，但必须留痕：号码形态声明为掩码、却带了明文的报文，按调用方计数上报，推动上游把报文改干净——否则问题会被「兼容」悄悄掩盖。</p>
+<p><strong>③ 存储与索引（有一条硬约束）</strong></p>
+<ul>
+<li>号码相关字段共 <strong>11 列</strong>，完整定义只在 <strong>2.5 ①</strong> 维护一份，本节不重复列表，避免两处口径打架。本节只涉及其中五列：主字段、号码形态、掩码号、加密标识、候选明文。默认值 <code>phone_type=1</code>，其余为 NULL；MySQL 8 用 instant add column，不锁表</li>
+<li><strong><code>encrypt_id</code> 不能建唯一索引</strong>：同一客户从不同渠道来会生成多条线索，加密标识必然重复，唯一约束会把这些正常线索直接挡回去。建<strong>普通索引</strong> <code>idx_encrypt_id</code> 供撞重查询即可</li>
+<li>候选明文不建索引、不进查询条件——号码占用检查靠密文查 <code>idx_encrypt_id</code>，不靠这个明文列（做法见 2.5 ④）</li>
+<li>幂等仍靠原线索 ID（A <code>extsystem_clue_id</code> / B <code>outSystemCluekey</code>），与现有逻辑一致，不新增判重路径</li>
+</ul>
+<p><strong>④ 向下游透传</strong></p>
+<ul>
+<li>车巴巴 → 线索中心：号码形态、掩码号、加密标识三个字段原样带过去；线索中心在主字段为空时 LC-A1 放行、LC-A2 跳过（改法见 2.2）</li>
+<li><strong>候选明文不向下游透传</strong>：它未经验证，一旦流到线索中心与厂商系统，就等于把「不采信」的决定在下一跳推翻</li>
+<li>一对多拆分：每条复制<strong>同一</strong>加密标识与掩码号，原线索 ID 相同——否则 3 家店会把同一客户当 3 个新客户</li>
+</ul>
+<p><strong>⑤ 灰度与验收</strong></p>
+<ul>
+<li>灰度：按 <code>page_id</code>、<code>dataSource</code> 两个维度做白名单，放开号码形态=2 的受理（先小范围）。先拿 1 个品牌 + 1 家店跑通。开关关着时一律返回 1006——不复用 1002，避免把「没开放」误报成「掩码号格式错」</li>
+<li>验收用例，八条：</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>用例</th>
+<th>期望结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>老报文，不带任何新字段</td>
+<td>正常入库，行为与现在一致</td>
+</tr>
+<tr>
+<td>2</td>
+<td>掩码报文，三字段齐全</td>
+<td>入库，密文落库</td>
+</tr>
+<tr>
+<td>3</td>
+<td>号码形态=2，但缺加密标识</td>
+<td>返回 1003</td>
+</tr>
+<tr>
+<td>4</td>
+<td>同一报文重复推 3 次</td>
+<td>只建 1 条线索</td>
+</tr>
+<tr>
+<td>5</td>
+<td>一条线索拆给 3 家店</td>
+<td>3 条线索，加密标识相同</td>
+</tr>
+<tr>
+<td>6</td>
+<td>号码形态=2，但带了 11 位明文号</td>
+<td>不报错；手机号落空，明文进候选明文；线索与外呼都不读它；判重仍走加密标识</td>
+</tr>
+<tr>
+<td>7</td>
+<td>明文报文却带了掩码号或加密标识</td>
+<td>返回 1007，不入库</td>
+</tr>
+<tr>
+<td>8</td>
+<td>手机号为空，且没传号码形态</td>
+<td>返回 1001，提示里写清三件套要求</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-5">2.2 线索中心 · 线索接入管理（留资出口，改造最重）</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能</th>
+<th>现状（原型原文）</th>
+<th>原型页面</th>
+<th>需改造</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LC-A1</td>
+<td>联系电话位数强校验</td>
+<td>「1 开头，第二位 3-9，总长度 11 位纯数字，<code>^1[3-9]\d{9}$</code>」</td>
+<td>《线索接入管理【逻辑流程图】》</td>
+<td>掩码号必然通不过。这是<strong>第二道</strong>拦截点，CB9 在它前面</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-A2</td>
+<td>手机号在网状态查询</td>
+<td>「查询手机号码在网状态」并按异常状态处理；查出来的空号结果缓存 48 小时</td>
+<td>《线索接入管理【逻辑流程图】》</td>
+<td>掩码号查不了 → 两种处理二选一（待 N5 确认）：跳过在网查询，或改用平台返回的号码有效性</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-A3</td>
+<td>下发厂商系统</td>
+<td>待下发队列 → 厂商系统接收接口；状态 <code>14-待下发厂商</code> / <code>16-下发失败</code></td>
+<td>《线索接入管理【逻辑流程图】》</td>
+<td>报文新增掩码字段；失败原因区分「号码不可用」与「厂商拒收」</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-A4</td>
+<td>线索接收入库字段</td>
+<td>客户姓名、性别、联系电话、备用电话、线索级别、IP、品牌、意向车型/门店、备注、外部系统线索编码、原始系统来源编码</td>
+<td>《线索接入管理【逻辑流程图】》</td>
+<td>新增掩码字段；<code>备用电话</code> 与 <code>联系电话</code> 分别标注明文状态</td>
+<td>P0</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-6">2.3 厂商系统 COC / NEV（不在我方，仅契约）</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>事项</th>
+<th>原型页面</th>
+<th>我方要做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CO1</td>
+<td>接收报文新增掩码字段、允许 phone 为空</td>
+<td>《线索接入管理【逻辑流程图】》；《车巴巴线索标准接口A【逻辑流程图】》《…B【逻辑流程图】》</td>
+<td>提前报备字段变更、约定联调窗口</td>
+</tr>
+<tr>
+<td>CO2</td>
+<td><strong>去重在 NEV 中台</strong>：加密标识未透传则中台无法判重</td>
+<td>《培育线索系统流程图》《NEV总部培育线索接收【逻辑流程图】》</td>
+<td>确认标识全链路透传</td>
+</tr>
+<tr>
+<td>CO3</td>
+<td>媒体状态回传链路（车巴巴读 COC 线索状态）</td>
+<td>《汽车之家线索状态同步【逻辑流程图】》</td>
+<td>状态字段不变，号码口径另议</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-7">2.4 撞重补全：工程前提、审计约束与自测</h3>
+<p>「同一套算法、一个加密号」这句话，工程上要落成三条，缺一条本节就不成立：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>含义</th>
+<th>具体指什么</th>
+<th>靠什么保证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>算出来一样</td>
+<td>同一个 11 位号码，本地算与平台下发得到同一个密文</td>
+<td>同算法 + 同盐（已确认）</td>
+</tr>
+<tr>
+<td>一个号只有一个密文</td>
+<td>号码到密文是稳定映射，不随线索 ID、时间、门店、渠道而变</td>
+<td>已确认</td>
+</tr>
+<tr>
+<td>任意时点可重算</td>
+<td>本地随时能对任意明文算出密文，用于反查</td>
+<td>加密节点可用</td>
+</tr>
+</tbody>
+</table></div>
+<p>第三条才是真正被依赖的能力：<strong>本地把对方线索的明文加密一遍，拿这个密文回自己库里查有没有对应的掩码线索</strong>——不向平台发请求，明文不出库。</p>
+<blockquote>
+<p>这条能力是双刃的：谁能调加密节点，谁就能对任意号码算出密文去撞库。因此加密节点只由服务端调用、业务侧不开放直接调用；所有反查必须记操作人与事由，与 2.5 ④ 号码占用检查共用同一套审计约束。</p>
+</blockquote>
+<p><strong>方案口径全部在交底总方案 3.3 路 A</strong>：两道闸门（密文同源 / 明文可信）、补的八条规则（补空不覆盖、只写候选、打三标、不并线索、正式链路覆盖并告警、实时 + 日终两个触发点、一条对多条全补、多条对一条取最近一次）、责任归属与三条自我约束，以那份为准，本节不重复。</p>
+<p><strong>本节交付给开发的自测清单</strong>：① 撞重命中 → 号码落候选明文、主字段仍空、来源=3、状态=0；② 跨店撞重 → 照补（2026-10-21 起不限门店），且能查到「补给了哪个门店」；③ 字节线索主字段已有值 → 一个字不碰；④ 补全后正式链路带回不同明文 → 以正式链路为准，差异有日志、有告警。</p>
+<p><strong>灰度</strong>：先 dry-run 两周只统计不写，准确率 ≥95% 再开写。同源已确认后，「密文没命中」是正常的查不到；真正要盯的异常是「明明同一个人却算不出同一个密文」，那是加密节点配置漂移，按故障排查，不计入业务拒绝。</p>
+<h3 id="sec-8">2.5 人工跟进拿到明文之后：录入、验证、回写</h3>
+<p><strong>这条路线不需要新造功能，落点在现网已有的动作上。</strong></p>
+<p>《任务跟进》原型（v10.1，2026-04-08）原文写着：「任务列表的『呼叫』按钮，唤起 PHONEBAR 的『外呼』拨号键，回填任务关联的手机号。<strong>备注：坐席可以修改手机号，和修改线路呼出，不影响关联回访任务。</strong>」</p>
+<p>也就是说，坐席改号现在就能做，改完直接盖在号码字段上——不校验、不留痕、不知道改的是对是错。掩码上线后，这个动作就是「坐席录入真实号码」的唯一入口。本节要做的就是改它的行为：<strong>改号仍然当场可拨（那是本次呼叫的会话参数），但不再直接写主字段，改写候选。</strong></p>
+<h4>① 字段总表：号码相关 11 列（完整定义只此一份；主文档 3.3 是摘要）</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>列名</th>
+<th>中文名（见 2.0）</th>
+<th>类型</th>
+<th>含义</th>
+<th>谁写</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>phone</code></td>
+<td>主字段</td>
+<td>varchar(20)</td>
+<td>已验证的明文号。<strong>只有验证通过才有值</strong></td>
+<td>转正事务</td>
+</tr>
+<tr>
+<td><code>phone_type</code></td>
+<td>号码形态</td>
+<td>tinyint</td>
+<td>1 明文 / 2 掩码</td>
+<td>接口入参</td>
+</tr>
+<tr>
+<td><code>mask_phone</code></td>
+<td>掩码号</td>
+<td>varchar(32)</td>
+<td>平台下发的 <code>*******3090</code>，展示与兜底外呼用。长度与接口层一致，统一定 32</td>
+<td>接口入参</td>
+</tr>
+<tr>
+<td><code>encrypt_id</code></td>
+<td>加密标识</td>
+<td>varchar(512)</td>
+<td>不可逆密文，撞重与占用检查用</td>
+<td>加密节点</td>
+</tr>
+<tr>
+<td><code>candidate_phone</code></td>
+<td>候选明文</td>
+<td>varchar(20)</td>
+<td>未验证的明文，来自坐席录入或撞重补全</td>
+<td>坐席录入 / 2.4</td>
+</tr>
+<tr>
+<td><code>phone_source</code></td>
+<td>号码来源</td>
+<td>tinyint</td>
+<td>1 报文明文 / 2 正式链路 / 3 撞重补全 / 4 坐席采集</td>
+<td>写入时打标</td>
+</tr>
+<tr>
+<td><code>phone_status</code></td>
+<td>验证状态</td>
+<td>tinyint</td>
+<td>0 待验证 / 1 已验证 / 2 已失效</td>
+<td>状态机</td>
+</tr>
+<tr>
+<td><code>phone_captured_by</code></td>
+<td>录入人</td>
+<td>varchar(32)</td>
+<td>坐席工号</td>
+<td>坐席录入</td>
+</tr>
+<tr>
+<td><code>phone_captured_at</code></td>
+<td>录入时间</td>
+<td>datetime</td>
+<td>—</td>
+<td>坐席录入</td>
+</tr>
+<tr>
+<td><code>phone_verified_by</code></td>
+<td>验证方式</td>
+<td>tinyint</td>
+<td>1 二次留资比对 / 2 店端核对 / 3 短信验证 / 4 人工复听</td>
+<td>验证动作</td>
+</tr>
+<tr>
+<td><code>phone_verified_at</code></td>
+<td>验证时间</td>
+<td>datetime</td>
+<td>—</td>
+<td>验证动作</td>
+</tr>
+<tr>
+<td><code>phone_ref_clue_id</code></td>
+<td>参照线索</td>
+<td>varchar(64)</td>
+<td>撞重补全时对方的线索 ID</td>
+<td>2.4</td>
+</tr>
+</tbody>
+</table></div>
+<p>索引三条：<code>idx_encrypt_id</code>（普通索引，撞重与占用检查都靠它）、<code>idx_phone</code>（现有）、<code>idx_phone_status</code>（扫待验证队列用）。<strong><code>candidate_phone</code> 不建索引</strong>，占用检查不用明文查（见 ④）。</p>
+<p><strong>手机号空值的三种状态怎么落</strong>（交底总方案 6.1 的验收项，落在这里）：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判定</th>
+<th>举个例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本就不下发</td>
+<td><code>phone_type=1</code> 且 <code>phone</code> 有值——非字节渠道，号码本来就有，不存在等待</td>
+<td>门店 DMS 推来的线索，手机号一开始就是 11 位明文</td>
+</tr>
+<tr>
+<td>待获取</td>
+<td><code>phone_type=2</code> 且 <code>phone_status</code> 为 0 或 2——掩码线索还没拿到明文</td>
+<td>抖音来的张先生只有 <code>*******3090</code>，候选格空着</td>
+</tr>
+<tr>
+<td>已获取</td>
+<td><code>phone_type=2</code> 且 <code>phone_status=1</code>——已转正，<code>phone</code> 有值</td>
+<td>张先生再次留资、密文撞上，8899 搬进正式栏</td>
+</tr>
+</tbody>
+</table></div>
+<p>三种状态都不触发空号告警。唯一算异常的是 <code>phone_type=1</code> 却 <code>phone</code> 为空（上游违约），按 1001 拒收。</p>
+<p><strong>候选变更历史表</strong>（状态机「坐席改录另一个号，旧的进历史表」的落点，<code>lead_phone_history</code>）：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>列</th>
+<th>类型</th>
+<th>存什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>clue_id</code></td>
+<td>varchar(64)</td>
+<td>哪条线索</td>
+</tr>
+<tr>
+<td><code>old_candidate_phone</code></td>
+<td>varchar(20)</td>
+<td>被替换掉的旧候选号</td>
+</tr>
+<tr>
+<td><code>old_encrypt_id</code></td>
+<td>varchar(512)</td>
+<td>旧候选号的加密标识</td>
+</tr>
+<tr>
+<td><code>phone_source</code></td>
+<td>tinyint</td>
+<td>旧的来源取值</td>
+</tr>
+<tr>
+<td><code>changed_by</code> / <code>changed_at</code></td>
+<td>varchar(32) / datetime</td>
+<td>谁改的、什么时候</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td>varchar(64)</td>
+<td>替换原因：坐席改录 / 转正 / 失效</td>
+</tr>
+</tbody>
+</table></div>
+<h4>② 状态机</h4>
+<p>七个状态、三条验证路径（二次留资比对 / 店端核对 / 短信验证）与「只有已验证才写主字段」的约束，见<strong>交底总方案 3.3 状态机</strong>（带完整例子），本节不重复。</p>
+<h4>③ 录入四条校验，顺序执行，任一不过就拦</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>校验</th>
+<th>不过时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>11 位、<code>^1[3-9]\d{9}$</code></td>
+<td>2002</td>
+</tr>
+<tr>
+<td>2</td>
+<td>不能是掩码形态，不能与本条掩码号相同</td>
+<td>2002</td>
+</tr>
+<tr>
+<td>3</td>
+<td>号码占用检查（见 ④）</td>
+<td>2001，附对方门店</td>
+</tr>
+<tr>
+<td>4</td>
+<td>坐席对该线索有跟进权限</td>
+<td>2003</td>
+</tr>
+</tbody>
+</table></div>
+<h4>④ 号码占用检查：用密文查，不查明文</h4>
+<p>这一步防的是「坐席错一位数，正好是另一个真实客户」。看起来概率低，线索量上百万就是天天发生，而且后果是两个客户的数据交叉、两家店抢同一个客户。</p>
+<p>做法：写入前先把输入的号码本地加密，得到一个加密标识，再用 <code>idx_encrypt_id</code> 索引查这个密文是否已经在<strong>其他</strong>线索上：</p>
+<ul>
+<li>未命中 → 允许录入，号码落候选明文</li>
+<li>命中其他线索 → 拦下，提示对方的门店，让坐席二选一：<strong>是同一位客户</strong>（转撞重流程，走 LC-B3）/ <strong>录错了</strong>（清空重录）</li>
+</ul>
+<p>好处是三重的：不用给候选明文建索引、不拿明文做查询条件、与 2.1.3 定的存储约束一致。前提是加密节点全系统统一、且与平台同算法同盐——<strong>后一条已于 2026-10-17 由字节确认</strong>。</p>
+<h4>⑤ 验证三条路，两条全自动</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>触发</th>
+<th>判定</th>
+<th>要坐席操作吗</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>二次留资比对</td>
+<td>任意渠道有新线索入库</td>
+<td>新线索号码的加密标识，与本条候选号码的加密标识相同。<strong>不限门店</strong>——跨店留资同样转正，与撞重补全不限门店一致（见交底总方案 3.3）</td>
+<td>否，全自动</td>
+</tr>
+<tr>
+<td>店端核对</td>
+<td>到店转明 / DMS 回传</td>
+<td>回传号码的加密标识与候选的加密标识相同</td>
+<td>否，全自动</td>
+</tr>
+<tr>
+<td>短信验证</td>
+<td>坐席点「发验证短信」</td>
+<td>客户点链接或回填验证码</td>
+<td>是，高价值线索兜底</td>
+</tr>
+</tbody>
+</table></div>
+<p>「人工复听」只把验证方式记为 4，<strong>不转正</strong>，仅作内部标记。</p>
+<p>主路径是前两条：都是系统事件，不打扰客户，而且验证发生时天然带着业务动作（客户又留了一次资、客户到店了），可信度不比短信验证差。</p>
+<h4>⑥ 转正：一个事务，四件事</h4>
+<ol>
+<li>主字段写入候选明文的值，验证状态置 1，同时记下验证方式与验证时间；<strong>号码来源保持原值</strong>——来源是历史事实，不因为验证过就改成「正式链路」</li>
+<li>候选明文、录入人与录入时间都不清空，审计要能回答「这个号最早是谁提供的」</li>
+<li>写一条转正事件到回写队列</li>
+<li>工作台该线索的号码位刷新，外呼按钮从「隐私号外呼」变为「直接拨号」</li>
+</ol>
+<h4>⑦ 回写：两条现成通道，加字段即可，不新建接口</h4>
+<p>原型里本来就有两个回写口，正好对应两个方向：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>方向</th>
+<th>现成通道</th>
+<th>现状报文</th>
+<th>要补的字段</th>
+<th>开关</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NEV 线索中台</td>
+<td>「跟进记录同步回 NEV 线索中台」，关联键「培育用户系统编码 = 培育线索系统编码」</td>
+<td>回访描述、时间、提交人、录音地址、通话状态等，<strong>不含电话</strong></td>
+<td>加密标识、验证状态、验证方式与时间、明文号（或只传密文）</td>
+<td>默认关，接口确认后开</td>
+</tr>
+<tr>
+<td>NEV 留资接口</td>
+<td>「跟进记录同步回 NEV 线索留资接口」，关联键「线索外部系统线索id = 留资未满-总部线索ID」</td>
+<td>同上，<strong>不含电话</strong></td>
+<td>同上</td>
+<td>默认关，接口确认后开</td>
+</tr>
+<tr>
+<td>本系统留资线索</td>
+<td>同库更新，按加密标识 + 专营店定位</td>
+<td>—</td>
+<td>同上</td>
+<td>默认开</td>
+</tr>
+</tbody>
+</table></div>
+<p>三条铁律：</p>
+<ul>
+<li><strong>只回写已验证的</strong>。待验证的号不出本系统——宁可中台少一条号码，也不要多一条错号</li>
+<li>回写必须带加密标识，让对方自己用密文校验一致性，不必信明文</li>
+<li>回写失败重试 3 次后进失败队列，<strong>不影响本地转正结果</strong>：本地已生效，回写只是补偿</li>
+</ul>
+<h4>⑧ 工作台交互与错误码</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>线索状态</th>
+<th>号码位显示</th>
+<th>可操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>掩码线索</td>
+<td><code>*******3090</code></td>
+<td>「隐私号外呼」「补充真实号码」</td>
+</tr>
+<tr>
+<td>已录入待验证</td>
+<td><code>*******3090</code>，下方小字「客户口述 138****1234（待验证）」，黄色标</td>
+<td>「隐私号外呼」「发验证短信」「撤销」</td>
+</tr>
+<tr>
+<td>已验证</td>
+<td><code>138****1234</code>，绿色标「已验证 · 客户二次留资」</td>
+<td>「直接拨号」</td>
+</tr>
+</tbody>
+</table></div>
+<p>明文默认脱敏，点「查看完整号码」才展开，且记审计日志（谁看的、什么时候）。</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>码</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2001</td>
+<td>该号码已属于其他线索（附对方门店）</td>
+</tr>
+<tr>
+<td>2002</td>
+<td>号码格式不正确</td>
+</tr>
+<tr>
+<td>2003</td>
+<td>无该线索跟进权限</td>
+</tr>
+<tr>
+<td>2004</td>
+<td>该线索已有已验证号码，不允许直接录入（须走号码变更流程）</td>
+</tr>
+</tbody>
+</table></div>
+<h4>⑨ 验收 8 条</h4>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>用例</th>
+<th>期望结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>坐席录入合法号码</td>
+<td>号码落候选明文，主字段仍空，验证状态=0、号码来源=4，有录入人</td>
+</tr>
+<tr>
+<td>2</td>
+<td>录入的号已属于其他线索</td>
+<td>返回 2001，提示对方门店，不落库</td>
+</tr>
+<tr>
+<td>3</td>
+<td>录入掩码形态或格式错</td>
+<td>返回 2002，不落库</td>
+</tr>
+<tr>
+<td>4</td>
+<td>客户从垂媒再留资、号码一致</td>
+<td>自动转正，验证方式=1（二次留资比对），同时回写本系统留资线索</td>
+</tr>
+<tr>
+<td>5</td>
+<td>客户到店、店端回传一致</td>
+<td>自动转正，验证方式=2（店端核对）</td>
+</tr>
+<tr>
+<td>6</td>
+<td>到店带回不同号码</td>
+<td>以正式为准覆盖，候选置失效，差异日志 + 告警</td>
+</tr>
+<tr>
+<td>7</td>
+<td>坐席连续录两个不同号</td>
+<td>后者替换前者，前者进历史表</td>
+</tr>
+<tr>
+<td>8</td>
+<td>中台回写开关关闭</td>
+<td>本地转正成功，无中台调用，日志记「未开启」</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>与 2.4 的关系</strong>：撞重补全产生的候选（<code>source=3</code>）走同一套状态机、同一套验证与转正，不单独维护第二套。</p>
+</blockquote>
+<hr>
+</div><div class="section"><h2 id="sec-9">三、培育线索链路：改造范围</h2>
+<p>培育线索由 NEV 中台推送进来，DCC 培育负责外呼、跟进、质检、回写。号码在这条链上是主键：判重、坐席搜索、线路评分、门店分派、关联工单，全都拿它当键。</p>
+<p>字段叫法同 <strong>2.0</strong>，此处不再重复。</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能</th>
+<th>现状（原型原文）</th>
+<th>原型页面</th>
+<th>需改造</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LC-B1</td>
+<td>NEV 总部培育线索接收</td>
+<td>来源编码含 <code>1-DNDC车巴巴</code> / <code>999999</code> / <code>888888</code> / <code>666666</code></td>
+<td>《NEV总部培育线索接收【逻辑流程图】》《培育线索系统流程图》</td>
+<td>接收掩码号与加密标识；手机号可空且要能区分状态</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B2</td>
+<td>空号检测</td>
+<td>「空号查询接口」；结果缓存 <strong>15 天</strong>（接入层查在网状态用的是 48 小时，两处别混）</td>
+<td>《NEV线索接收标准接口【逻辑流程图】》</td>
+<td>掩码线索无法查空号 → 跳过并标记</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B3</td>
+<td>重复跟进判断</td>
+<td>「查询手机号码是否存在店端跟进中 / 总部培育任务处理中 / 人工培育任务状态=联系中」</td>
+<td>《NEV总部培育线索接收【逻辑流程图】》《任务跟进》</td>
+<td>判重键改加密标识</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B4</td>
+<td>留资未满线索同步</td>
+<td>每日 12 点拉 CDP 人群包；含「用户数据_联系电话」「是否重复留资」；<strong>「留资未满-总部线索ID（同一个手机号码自动生成唯一ID）」</strong></td>
+<td>《留资未满线索数据同步【逻辑流程图】》</td>
+<td>唯一 ID 生成依据改加密标识；人群包口径需 CDP 配合</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B5</td>
+<td>批量下发归属地分派</td>
+<td>「专营店城市 &gt; 手机号城市 &gt; 专营店省份 &gt; 手机号省份」；上游替代数据：E2–E5 带「意向城市/意向省份」、E1 带 <code>province</code>/<code>city</code>（字段存在已确认；掩码线索上是否保留，见 N2）</td>
+<td>《批量下发-人工客服【逻辑流程图】》《批量下发-ai外呼【逻辑流程图】》</td>
+<td>重定优先级：<strong>专营店城市 &gt; 媒体推送省市 &gt; IP &gt; 省份兜底</strong></td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B6</td>
+<td>坐席工作台搜索</td>
+<td>「精准匹配手机号，搜索列表各类型任务」</td>
+<td>《任务跟进》</td>
+<td>增加加密标识 / 掩码后四位检索</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B7</td>
+<td>坐席工作台呼叫</td>
+<td>呼叫按钮唤起 PHONEBAR 回填任务关联手机号；坐席可改号码与线路</td>
+<td>《任务跟进》</td>
+<td>抖音线索改经智能DCC 取号呼出；<strong>坐席改号由直接改主字段改为写候选，验证后才转正（2.5）</strong></td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B8</td>
+<td>线路评分择优</td>
+<td>v10.1（2026-04-08）：入参「手机号码、业务类型、座席帐号」</td>
+<td>《任务跟进》</td>
+<td>掩码线索无法评分 → 走 DCC 指定线路或改线索标识</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B9</td>
+<td>天网门店分派</td>
+<td>v13.6 / v14.5：按「回访工单-手机号码 + 城市/省份」查天网专营店，组合分数降序</td>
+<td>《任务跟进》</td>
+<td>号码项失效 → 降为城市/省份单维度，评估准确度</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B10</td>
+<td>用户黑名单</td>
+<td>「手机号码黑名单」，含「是否有重复数据」校验</td>
+<td>《用户黑名单-新增编辑【逻辑流程图】》《推送全量黑名单用户-预外呼【逻辑流程图】》</td>
+<td>命中改加密标识；导入明文先本地加密</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B11</td>
+<td>推送预外呼 / 接收话单</td>
+<td>人工任务 → 预外呼接口（<strong>VCP 与天润双版本</strong>）；接收话单、软电话事件</td>
+<td>《人工任务是否同步VCP预览外呼》《人工任务是否同步天润预览外呼》《接收预外呼VCP话单数据【逻辑流程图】》</td>
+<td>抖音线索走智能DCC；话单与录音来源切换</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B12</td>
+<td>结果回写中台</td>
+<td>回写联系电话、客户姓名、smartcode、<code>cocClueState</code>、意向专营店</td>
+<td>《NEV总部培育线索接收【逻辑流程图】》《批量下发-人工客服【逻辑流程图】》</td>
+<td>号码字段回写口径与空值处理</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>LC-B14</td>
+<td>试驾回访工单</td>
+<td>「根据手机号码查询最近 180 天的试驾回访工单记录」</td>
+<td>《任务跟进》</td>
+<td>改按加密标识关联</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>LC-B15</td>
+<td>线索导入（Excel）</td>
+<td>手工导入车系线索</td>
+<td>《线索导入》</td>
+<td>程序自动加密入库（分两种场景，见下方说明）</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>LC-B16</td>
+<td>号码质量与报表（并入 4.3 RP2/RP3）</td>
+<td>无效号码标签明细、质量标签明细等，统一由「报表」条目承接</td>
+<td>同 RP2/RP3</td>
+<td>见 RP2 / RP3</td>
+<td>见 RP2/RP3</td>
+</tr>
+<tr>
+<td>LC-B17</td>
+<td>短信触达（预触达 / 外呼后短信 / 坐席短信跟进 / 排班模板）</td>
+<td>5 条下发规则按外呼类型、通话状态、标签、优先级命中后下发；3 次未接自动转「短信辅助建联」；未接通下跟进结果含「短信跟进」</td>
+<td>《短信下发配置》《任务排班-短信模板》《任务跟进》《三无忧配置》</td>
+<td><strong>掩码号收不了、平台不代发（2026-10-17 已确认）</strong>：按线索来源跳过并降级，见 3.1</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>附1</td>
+<td>首触归因</td>
+<td>按手机号打「首次触达」标记（交底总方案 3.2 已列，无独立 B 编号）</td>
+<td>见交底总方案 3.2</td>
+<td>改按加密标识 + 首触打标，否则渠道归因、投放评估、供应商结算全错</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>附2</td>
+<td>关键行为提醒（同店再次留资 T/N）</td>
+<td>按手机号命中「同店再次留资」提醒（交底总方案 3.2 已列，无独立 B 编号）</td>
+<td>见交底总方案 3.2</td>
+<td>改按加密标识，时间窗 T 与频次 N 不变</td>
+<td>P0</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>附1、附2 不是新编号，是交底总方案 3.2 换键清单里落在培育主线的两处，开发按条目名找即可，别按编号找。</p>
+</blockquote>
+<p><strong>LC-B15 落地说明：导入场景下「加密」由谁做、模板怎么改</strong></p>
+<p><strong>加密由程序在上传后自动完成，员工不需要、也不该手工填加密标识。</strong> 分两种场景：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>Excel 里有什么</th>
+<th>程序做什么</th>
+<th>模板改不改</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 明文号码（常态：展会、门店、DCC 手工收集）</td>
+<td>客户姓名 + 11 位手机号</td>
+<td>服务端先做 11 位校验 → 本地加密生成加密标识 → 与明文号码同行落库（号码形态记 1）</td>
+<td><strong>不用改</strong>，员工无感；加密标识由系统生成，不开放填写</td>
+</tr>
+<tr>
+<td>② 带掩码的数据（外部系统导出、批量承接字节线索）</td>
+<td>手机号列是掩码格式，另有加密标识、原线索 ID</td>
+<td>按号码列的形态<strong>自动分流</strong>：是 11 位明文就走场景①；是掩码格式就走掩码入库，此时加密标识与原线索 ID 必填，缺一个就整行拒收并在结果里标出行号</td>
+<td>增加三列<strong>可选</strong>列：掩码号 / 加密标识 / 原线索 ID；不填就走场景①</td>
+</tr>
+</tbody>
+</table></div>
+<p>两个必须守住的口径：</p>
+<ul>
+<li><strong>加密与字节下发同算法同盐，已确认（2026-10-17）</strong>。所以场景①本地生成的加密标识，和平台下发的能直接比对：这位客户从手工导入渠道进来，能跟字节来的那条撞上，导入判重成立。原来是这条链上最悬的一环，现在落地了。要守住的是——加密节点必须严格按字节给的算法与盐配置，不许自行选参数或换实现。</li>
+<li><strong>导入判重键跟着变</strong>：明文行按现有手机号判重不变；掩码行按加密标识（或原线索 ID）判重，同一文件内重复行提示合并，不重复建线索。</li>
+</ul>
+<h3 id="sec-10">3.1 短信：已确认发不出去，影响六处</h3>
+<p>2026-10-17 答复：<strong>掩码号不能接收短信，平台也不代发。</strong> 这条定死之后不是「能力打折」，是「抖音线索在拿到明文之前，一次短信都发不出去」。</p>
+<p><strong>先确认一件事：短信不是培育任务生成的前置条件</strong>——原型《三无忧配置》批次记录可反证：2026-06-15 去重后 10,000 条、短信成功 9,911 条，照样生成 10,000 个任务（同见交底总方案 4.5）。所以抖音线索不会卡在「短信成功」这一步进不来，真正丢的是下面六处的动作：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>落点</th>
+<th>原型出处（现状证据）</th>
+<th>改法（开发执行）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>三无忧「短信预触达」</td>
+<td>批次执行记录四步：候选池生成（准入/分层/去重过滤）→ 短信预触达 → 生成任务；报表列「短信成功」排在「DCC培育任务」之前</td>
+<td>掩码线索跳过预触达、直接进任务池；报表「短信成功」列对掩码线索显示「不适用」，成功率分母剔除</td>
+</tr>
+<tr>
+<td>2</td>
+<td>AI 外呼结束后的短信下发（5 条规则）</td>
+<td>《短信下发配置》：按外呼类型、通话状态、外呼标签、优先级命中后下发，共 5 个模板</td>
+<td>规则执行前先判线索来源，掩码线索直接跳过并记「未触达-无可用号码」</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>三次未接的自动兜底</strong></td>
+<td>《2~N呼接通率》自愈机制：「若 3 次外呼皆未接通，系统自动触发退池机制，将其转为『短信辅助建联』策略」</td>
+<td>改为「转待短信池」：标记等明文，拿到明文后补发；掩码期不计入「短信辅助建联」口径</td>
+</tr>
+<tr>
+<td>4</td>
+<td>坐席「未接通」下的跟进结果</td>
+<td>《任务跟进》跟进结果枚举：未接通 → 稍后回拨 / 短信跟进（未接通发短信、客户要求短信、其他）</td>
+<td>掩码线索隐藏「短信跟进」，只留「稍后回拨」；客户明确要求短信时，落一条「待补发」待办</td>
+</tr>
+<tr>
+<td>5</td>
+<td>坐席任务卡「下发短信 / 下发关怀短信」</td>
+<td>《任务跟进》任务卡两个按钮</td>
+<td>掩码线索按钮置灰，悬浮写明原因</td>
+</tr>
+<tr>
+<td>6</td>
+<td>任务排班 4 类模板</td>
+<td>《任务排班-短信模板》：到店提醒、跟进回访、活动邀约、生日祝福</td>
+<td>模板标注「掩码线索不可用」；到店提醒改由坐席电话或企微提醒，试驾排程页同步</td>
+</tr>
+</tbody>
+</table></div>
+<p>改完的净效果：<strong>抖音线索在拿到明文之前，触达手段只剩外呼一种，且没有短信兜底。</strong> 接通率与二次触达率都会受影响，报表必须能按线索来源分开看，否则会被当成系统故障排查。</p>
+<hr>
+</div><div class="section"><h2 id="sec-11">四、非线索模块：号码依赖影响面</h2>
+<p>线索中心 480 个页面里，有 84 个页面的「手机号 / 联系电话」出现 3 次以上，属于与号码强相关的页面（企微营销板块的页面不属于我方，未纳入下表）。主线之外，还有质检、报表、试驾、配置器四条支线以号码为键。</p>
+<h3 id="sec-12">4.1 板块全景</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>主要页面</th>
+<th>号码依赖</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>线索培育（主线）</td>
+<td>线索接入管理、NEV总部培育线索接收、任务跟进、批量下发</td>
+<td>判重、外呼、在网/空号检测</td>
+</tr>
+<tr>
+<td>录音抽检（质检）</td>
+<td>录音列表、质检明细、质检看板、质检模型配置</td>
+<td>录音↔线索关联、明细列</td>
+</tr>
+<tr>
+<td>报表 / 看板</td>
+<td>外呼任务明细、AI外呼任务明细、培育后效明细、质量标签明细、员工维度看板</td>
+<td>导出回填、号码列、无效号码统计</td>
+</tr>
+<tr>
+<td>试驾 / 排程</td>
+<td>预约试驾、试驾回访处理流程、试驾排程评分统计</td>
+<td>试驾回访工单查询、排程评分</td>
+</tr>
+<tr>
+<td>配置器群</td>
+<td>培育任务分配配置器、回访预外呼重推配置、外呼执行/预外呼任务/未接通/未转化配置器</td>
+<td>分配规则按<strong>号码归属地</strong>分城；重推请求带手机号码并按号码查状态</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-13">4.2 质检 / 录音抽检</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能</th>
+<th>现状（原型证据）</th>
+<th>原型页面</th>
+<th>需改造</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QA1</td>
+<td>录音 ↔ 线索关联</td>
+<td>质检明细按「客户手机号」展示并关联被检录音</td>
+<td>《人工质检-质检明细》《人工质检-录音列表》</td>
+<td>掩码线索录音无法按号码关联 → 关联键改任务ID / 加密标识</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>QA2</td>
+<td>质检看板号码维度</td>
+<td>按号码维度统计与筛选</td>
+<td>《nev培育-质检看板》</td>
+<td>统计失真 → 改按任务/坐席/线索ID</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>QA3</td>
+<td>质检平台登录</td>
+<td>「使用手机号&amp;验证码即可登录」</td>
+<td>《人工质检-录音列表》</td>
+<td>用的是员工本人手机号，与线索号码无关，不用改</td>
+<td>仅核对</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-14">4.3 报表 / 看板</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能</th>
+<th>现状（原型证据）</th>
+<th>原型页面</th>
+<th>需改造</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RP1</td>
+<td><strong>外呼任务明细导出回填</strong></td>
+<td>「导出数据时执行，根据<strong>手机号码</strong>查询 DCC 留资线索数据，取最新一条回填『NEV线索中台编码』参数」</td>
+<td>《外呼任务明细》</td>
+<td><strong>硬伤</strong>：掩码线索查不到 → 「NEV线索中台编码」整列空 → 与中台对账时对不上</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>RP2</td>
+<td>无效号码标签统计</td>
+<td>按号码判定空号/停机</td>
+<td>《无效号码标签明细》</td>
+<td>掩码期无法判无效 → 掩码线索单列「号码不可判定」，不参与无效率分母</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>RP3</td>
+<td>号码列展示</td>
+<td>质量标签明细列「手机号码」「客户手机号」；AI外呼任务明细、培育后效明细含号码列</td>
+<td>《质量标签明细》《ai外呼任务明细》《培育后效明细》</td>
+<td>号码列脱敏 + 导出权限收敛</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>RP4</td>
+<td>看板口径</td>
+<td>预外呼效果、自动填单效果、员工维度、AI外呼重拨四个看板</td>
+<td>同现状列四个看板页</td>
+<td>分母若含号码有效率，需同步剔除</td>
+<td>P2</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-15">4.4 试驾 / 排程</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能</th>
+<th>现状（原型证据）</th>
+<th>原型页面</th>
+<th>需改造</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TD1</td>
+<td>试驾回访工单查询</td>
+<td>同 LC-B14：按手机号查最近 180 天工单</td>
+<td>《任务跟进》</td>
+<td>改按加密标识关联</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>TD2</td>
+<td>试驾排程与评分</td>
+<td>预约试驾、预约试驾明细、试驾回访处理流程、试驾排程评分统计、留资线索试驾排程场景</td>
+<td>同现状列五页</td>
+<td>评分若含号码维度需同步</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>TD3</td>
+<td>接收试驾状态数据</td>
+<td>按线索回写试驾状态</td>
+<td>《接收试驾状态数据》</td>
+<td>关联键核对</td>
+<td>P2</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-16">4.5 配置器群</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>事项</th>
+<th>说明</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CF1</td>
+<td>外呼执行配置器 / 预外呼任务配置器</td>
+<td>原型全文 0 命中「号码/手机号」；仅核对筛选条件确无「号码状态」（空号/停机）维度</td>
+<td>仅核对</td>
+</tr>
+<tr>
+<td>CF2</td>
+<td>未接通 / 未转化 / 跟进次数配置器</td>
+<td>按跟进结果与次数触发，不依赖号码</td>
+<td>仅核对</td>
+</tr>
+<tr>
+<td>CF3</td>
+<td>培育任务分配配置器 / 分配规则</td>
+<td>配置器本身不依赖号码形态、无需改动。仅核对一点：分配执行选「按城市」时取的是「手机号码归属地」，掩码线索取不到 → 确认该处取数已切到 LC-B5 新链（专营店城市 &gt; 媒体推送省市 &gt; IP &gt; 省份兜底），否则掩码线索落默认城市</td>
+<td>仅核对</td>
+</tr>
+<tr>
+<td>CF4</td>
+<td>SC / 线索状态 / 渠道 / 车系配置器、数据字典管理</td>
+<td>字典与映射，不存号码</td>
+<td>仅核对</td>
+</tr>
+<tr>
+<td>CF5</td>
+<td>回访预外呼重推配置</td>
+<td>请求参数含手机号码、主叫号码；执行「查询手机号码是否存在店端跟进中状态」→ 改按线索 ID / 加密标识（与 OT1 同款查询）</td>
+<td>P0</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-17">4.6 其他零散页</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>功能</th>
+<th>现状（原型证据）</th>
+<th>原型页面</th>
+<th>需改造</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OT1</td>
+<td>智能体填单审核</td>
+<td>「查询<strong>手机号码</strong>是否存在店端跟进中状态」</td>
+<td>《智能体填单审核》</td>
+<td>判重依赖号码 → 改加密标识（与 LC-B3 同源，但是另一条入口）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>OT2</td>
+<td>私域留资未满同步</td>
+<td>与《留资未满线索数据同步》同源的另一条 CDP 同步</td>
+<td>《私域留资未满线索数据同步【逻辑流程图】》</td>
+<td>唯一 ID 的生成依据跟着改，与 LC-B4 是同一类问题</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>OT4</td>
+<td>线索导入</td>
+<td>手工导入车系线索</td>
+<td>《线索导入》</td>
+<td>同 LC-B15</td>
+<td>P1</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-18">4.7 影响面结论（全系统）</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>板块（章节）</th>
+<th>对应条目</th>
+<th>最高优先级</th>
+<th>最需要先动的一处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>车巴巴（2.1）</td>
+<td>CB1–CB12</td>
+<td>P0</td>
+<td>懂车云店与车云店的「13~19 位」强校验（CB9）把掩码线索全挡在门外（强校验同款共 5 处）；头条 MAPI 两页原型均无电话字段（N9）；E11 无强校验，掩码号能直接进（反向风险）；原拟「基木鱼线索接口」为回传页已撤销</td>
+</tr>
+<tr>
+<td>线索中心接入层（2.2）</td>
+<td>LC-A1–A4</td>
+<td>P0</td>
+<td>正则强校验（A1）与在网查询（A2）两道都过不了掩码号</td>
+</tr>
+<tr>
+<td>培育主线（三）</td>
+<td>LC-B1–B12、B14–B15（B16 见报表、B17 见短信）</td>
+<td>P0</td>
+<td>《任务跟进》整条流程以号码为轴：坐席搜索、线路评分、试驾回访工单、天网分派全按手机号；B17 短信六处降级</td>
+</tr>
+<tr>
+<td>质检 / 录音（4.2）</td>
+<td>QA1–QA3</td>
+<td>P1</td>
+<td>录音与线索靠手机号关联，掩码线索的录音拿不出关联证据</td>
+</tr>
+<tr>
+<td>报表 / 看板（4.3）</td>
+<td>RP1–RP4</td>
+<td>P0</td>
+<td>《外呼任务明细》导出按手机号反查线索回填「NEV线索中台编码」，掩码后整列空</td>
+</tr>
+<tr>
+<td>试驾 / 排程（4.4）</td>
+<td>TD1–TD3</td>
+<td>P1</td>
+<td>试驾回访工单按手机号取 180 天记录</td>
+</tr>
+<tr>
+<td>配置器群（4.5）</td>
+<td>CF1–CF5</td>
+<td>P0（CF5）</td>
+<td>回访预外呼重推配置按手机号查店端跟进状态（CF5），与 OT1 同款查询</td>
+</tr>
+<tr>
+<td>其他散页（4.6）</td>
+<td>OT1、OT2、OT4</td>
+<td>P0</td>
+<td>智能体填单审核按号码判重（OT1）；私域留资未满同步的唯一 ID 生成（OT2）</td>
+</tr>
+<tr>
+<td>已排查、无落点</td>
+<td>—</td>
+<td>仅核对</td>
+<td>CDP 打标签、AI 场景专营店选取规则：号码只用于展示或条件匹配，不产生新的改造项</td>
+</tr>
+</tbody>
+</table></div>
+<p>读法：标 P0 的六行不同步改，上线当天会同时出问题——媒体线索进不来、接入层拦下、坐席搜不到人、报表对不上账、判重重复建单。</p>
+<hr>
+</div><div class="section"><h2 id="sec-19">五、待确认事项：逐条背景与原型依据</h2>
+<blockquote>
+<p><strong>清单以《交底总方案》第 7 章为准</strong>（那里按阻断级 / 重要级 / 一般级分级）。本章只补每条问题的背景、现状证据与卡点，供开发判断工作量；编号与主文档一致，跳号（N4、N11、N12、N14）是已闭环或已定性。</p>
+</blockquote>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>事项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N1</td>
+<td><strong>掩码线索的报文形态</strong>：11 个入口推 / 拉过来的报文里号码怎么传</td>
+<td>三种可能：① 掩码号填进原「电话」字段（字段不变、值变了）→ 只需放松校验；② 电话字段留空、另加掩码号与加密标识字段 → 要加字段并改必填；③ 仍给明文（如豁免期内）→ 改动最小。E2–E10 为对方推送，按 ①② 问；E1 / E11 为我方拉取，按接口文档问。现网证据：接口 A 的 <code>phone</code>、接口 B 的 <code>contactTel</code> 均必填，懂车云店与车云店另有 13~19 位强校验（5 处）——校验是否放开决定掩码线索能否进得来</td>
+</tr>
+<tr>
+<td>N2</td>
+<td>掩码线索是否仍带省 / 市 / 经销商编码</td>
+<td>现网证据：E2–E5 请求参数已知带「意向城市 / 意向省份 / 分发经销商ID」。待字节书面确认这组字段在掩码线索上是否保留</td>
+</tr>
+<tr>
+<td>N3</td>
+<td>加密标识能否透传到 NEV 中台并用于其去重</td>
+<td>算法同源已确认（2026-10-17），只剩下<strong>透传链路</strong>与<strong>中台是否采用</strong>两件事，属接口与流程确认。透传断则重复线索激增</td>
+</tr>
+<tr>
+<td>N5</td>
+<td>掩码号能否用于在网 / 空号检测，或平台是否返回号码有效性</td>
+<td>两道检测都依赖号码查询</td>
+</tr>
+<tr>
+<td>N6</td>
+<td>MD5 线索评级在掩码后如何延续</td>
+<td>已有能力，断了影响评级</td>
+</tr>
+<tr>
+<td>N7</td>
+<td>状态回传媒体能否用隐私号替代 <code>customerPhone</code></td>
+<td>现为明文号码</td>
+</tr>
+<tr>
+<td>N8</td>
+<td>COC / NEV 报文能否新增掩码字段、接受 phone 空值</td>
+<td>下游不在我方，需对方排期</td>
+</tr>
+<tr>
+<td>N9</td>
+<td>字节头条 MAPI 线索的号码从哪个字段取</td>
+<td><strong>下发与更新两页原型示例都只有姓名/省/市/经销商/车型，均无电话字段</strong>，需研发确认现网取号位置。注意：更新接口按 <code>clue_id</code> 去重，说明线索 ID 现网已有，缺的只是号码那一环</td>
+</tr>
+<tr>
+<td>N10</td>
+<td>NEV 中台回写接口能否新增号码字段、中台是否采信该号码</td>
+<td>现状「跟进记录同步回 NEV 线索中台」报文不含电话。若中台收到但不用它做去重与下发，2.5 ⑦ 这条回写就没有实际意义，不如只留本地</td>
+</tr>
+<tr>
+<td>N13</td>
+<td>启辰本地通车云店（车云店 MAPI）是否仍在运行</td>
+<td>页内「备注说明：下线接口服务」（2024-01-04 接口调整记录）。若已停用，该入口与对应改造量应剔除（11 → 10）；若仍在跑，改造口径同其他 MAPI 拉取</td>
+</tr>
+<tr>
+<td>N15</td>
+<td>转明通路的细节</td>
+<td>到店转明与成交后回传明文的<strong>触发条件、返回字段、时效、校验方式</strong>分别是什么？这是唯一合规的取号方式，不定则 2.5 只能做本地那半</td>
+</tr>
+<tr>
+<td>N16</td>
+<td>号码有效期到期后的在途任务处理</td>
+<td>90 天 / 14 天到期后号码状态如何？我方线路上在途任务如何处理？掩码方案不限期，此条只在改走过渡路径时才需要</td>
+</tr>
+<tr>
+<td>N17</td>
+<td>存量明文线索的处理</td>
+<td>豁免期（至 2027-01-14）结束后，此前以明文下发的存量线索如何处理？是否需我方二次改造</td>
+</tr>
+<tr>
+<td>N18</td>
+<td>「不限期」的确切含义</td>
+<td>是否与线索状态有关？已成交或已关单线索是否仍可呼？是否需周期性重新取号</td>
+</tr>
+<tr>
+<td>N19</td>
+<td>私信留资脱敏后的字段形态</td>
+<td>私信聊天中产生的手机号，脱敏后的最终产品形态能否同步接口字段定义</td>
+</tr>
+<tr>
+<td>N20</td>
+<td><strong>话单明细的字段、时效、格式，以及实时信令是否开放</strong></td>
+<td>录音已确认可回传（2026-10-20），但明细不清则话单落库表、质检关联、监听/耳语都设计不了</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>已闭环事项见<strong>交底总方案 7.4</strong>，已定性事项（撞重补全用途边界）见 <strong>7.5</strong>，此处不重复。</p>
+</blockquote>
+<hr>
+</div><div class="section"><h2 id="sec-20">附录一：原型证据</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>证据</th>
+<th>出处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>联系电话强校验正则 <code>^1[3-9]\d{9}$</code>；在网状态查询 + 空号缓存 48 小时；状态 <code>14-待下发厂商</code> / <code>16-下发失败</code></td>
+<td>《线索接入管理【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>空号查询缓存 15 天</td>
+<td>《NEV线索接收标准接口【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>「留资未满-总部线索ID（同一个手机号码，自动生成唯一ID）」</td>
+<td>《留资未满线索数据同步【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>培育线索下发优先级「NEV线索中台 &gt; 总部培育客服 &gt; 不下发」，AI 外呼结果轮询 2 分钟 × 3 次</td>
+<td>《培育线索系统流程图》</td>
+</tr>
+<tr>
+<td>归属地四级优先级「专营店城市 &gt; 手机号城市 &gt; 专营店省份 &gt; 手机号省份」</td>
+<td>《批量下发-人工客服【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>线路评分入参含手机号码（v10.1，2026-04-08）；天网门店分派按回访工单手机号 + 城市/省份（v13.6，2026-07-15）</td>
+<td>《任务跟进》</td>
+</tr>
+<tr>
+<td>预外呼已有 VCP 与天润两个版本任务接口</td>
+<td>《人工任务是否同步VCP预览外呼》《人工任务是否同步天润预览外呼》</td>
+</tr>
+<tr>
+<td>懂车云店强校验「电话非空且号段 13~19 开头 11 位」（四个入口一字不差）；请求参数含「号码归属地」「意向城市」「意向省份」「分发经销商ID」；查重键 <code>extsystem_clue_id</code>；异常表含「1、手机号码不合法」「3、重复线索」</td>
+<td>《广告投放抖音号-懂车云店api线索接收接口》等四页</td>
+</tr>
+<tr>
+<td>T-1 每日 10 点扫异常、邮件预警</td>
+<td>《懂车云店api线索监控【逻辑流程图】》（v2.9.0，2024-10-17）</td>
+</tr>
+<tr>
+<td>懂车云店 SC 映射匹配顺序「组件ID &gt; 来源抖音号+广告主ID+流量类型 &gt; 来源抖音号+流量类型 &gt; 来源抖音号」</td>
+<td>《日产懂车云店数据分流【逻辑流程图】》（v2.9.7，2025-03-20）</td>
+</tr>
+<tr>
+<td>头条 1 发 3 示例：广州风日 H2901X｜绿日 H2992X｜南菱 H2960X；MAPI key：<code>province</code>/<code>city</code>/<code>distributor</code>/<code>car_model</code></td>
+<td>《字节头条线索下发接口【逻辑流程图】》</td>
+</tr>
+<tr>
+<td>东风南方抖音号：联系电话 <code>telephone</code>、线索ID <code>id</code>、<code>pageid=dfnfdy</code>；启辰抖店：卡券「手机号码」<code>telephone</code>、<code>source=4</code></td>
+<td>《东风南方抖音号线索》《启辰抖店官方店线索接收接口》</td>
+</tr>
+<tr>
+<td>「导出数据时执行，根据『手机号码』查询 DCC 留资线索数据，取最新一条回填『NEV线索中台编码』」</td>
+<td>《外呼任务明细》</td>
+</tr>
+<tr>
+<td>「查询手机号码是否存在店端跟进中状态」</td>
+<td>《智能体填单审核》</td>
+</tr>
+<tr>
+<td>质量标签明细列「手机号码」「客户手机号」；质检明细列含「客户手机号」</td>
+<td>《质量标签明细》《人工质检-质检明细》</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+</div><div class="section"><h2 id="sec-21">附录二：全量扫描数据（480 页，84 页命中）</h2>
+<p><strong>方法</strong>：对 <code>线索中心/</code> 480 个 html 去掉 script/style 后，统计「手机号码 / 手机号 / 联系电话 / 电话号码」出现次数，≥3 次视为有实质号码依赖，按文件名归板块。<strong>这是「非线索模块要不要改」这张清单的原始依据，不是抽样。</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>板块</th>
+<th>页数</th>
+<th>命中次数</th>
+<th>高频页（次数）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>任务 / 分配 / 跟进</td>
+<td>10</td>
+<td>132</td>
+<td>任务跟进（50）、任务跟进_-填单未接通场景（27）、批量下发-人工客服（10+9）</td>
+</tr>
+<tr>
+<td>外呼 / 配置器</td>
+<td>8</td>
+<td>73</td>
+<td>同步天润预览外呼（14）、同步VCP预览外呼（14）、批量下发-ai外呼（13）</td>
+</tr>
+<tr>
+<td>线索接入 / 接收</td>
+<td>6</td>
+<td>54</td>
+<td>NEV总部培育线索接收（22）、NEV线索接收标准接口-接口参数（10）、线索接入管理（7）</td>
+</tr>
+<tr>
+<td>报表 / 看板</td>
+<td>7</td>
+<td>38</td>
+<td>外呼任务明细（9）、ai外呼任务明细（8）、质量标签明细（5）、无效号码标签明细（5）</td>
+</tr>
+<tr>
+<td>黑名单 / 规则</td>
+<td>3</td>
+<td>28</td>
+<td>用户黑名单-新增编辑（12）、用户黑名单（10）</td>
+</tr>
+<tr>
+<td>质检 / 录音</td>
+<td>6</td>
+<td>24</td>
+<td>人工质检-录音列表（6）、人工客服录音（5）、ai外呼录音（4）、nev培育-质检看板（3+3）</td>
+</tr>
+<tr>
+<td>CDP / 标签</td>
+<td>2</td>
+<td>10</td>
+<td>4-4_意向车系打标签（5）、4-3_线索状态打标签（5）</td>
+</tr>
+<tr>
+<td>门店 / 经销商</td>
+<td>1</td>
+<td>6</td>
+<td>AI场景专营店选取规则（6）</td>
+</tr>
+<tr>
+<td>试驾 / 排程</td>
+<td>1</td>
+<td>3</td>
+<td>预约试驾明细（3）</td>
+</tr>
+<tr>
+<td>其他散页</td>
+<td>34</td>
+<td>—</td>
+<td>留资未满线索数据同步（13）、私域留资未满同步（11）、线索导入（9）、智能体填单审核（8）</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>另有 6 页属企微营销板块（含《2-2-3 应用提醒》19 次），非我方范围，未纳入上表。</p>
+</blockquote></div>
+  </main>
+</div>
+<a class="top" href="#top" title="回到顶部">↑</a>
+</body>
+</html>
