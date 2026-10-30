@@ -342,27 +342,26 @@ tr:hover td { background: #f0f7ff; }
 &lt;marker id=&quot;a1b&quot; markerWidth=&quot;8&quot; markerHeight=&quot;7&quot; refX=&quot;7&quot; refY=&quot;3.5&quot; orient=&quot;auto&quot;&gt;&lt;path d=&quot;M0,0 L8,3.5 L0,7 z&quot; fill=&quot;#155eef&quot;/&gt;&lt;/marker&gt;
 &lt;/defs&gt;
 
-&lt;!-- 顶部胶囊标签 --&gt;
-&lt;rect x=&quot;16&quot; y=&quot;8&quot; width=&quot;220&quot; height=&quot;24&quot; rx=&quot;12&quot; fill=&quot;#eff4ff&quot; stroke=&quot;#155eef&quot;/&gt;
-&lt;text x=&quot;126&quot; y=&quot;24&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#123a86&quot;&gt;统一接入 · 线索沉淀 · 智能路由&lt;/text&gt;
-
-&lt;!-- 顶部油车/电车直发大抛物线主通道 (起落点顶平齐 y=58，完全左右对称、气势贯通、直达门店系统) --&gt;
-&lt;path d=&quot;M 411 52 C 480 6, 955 6, 1025 50&quot; fill=&quot;none&quot; stroke=&quot;#e02d2d&quot; stroke-width=&quot;3&quot; marker-end=&quot;url(#a1r)&quot;/&gt;
-&lt;text x=&quot;718&quot; y=&quot;11&quot; text-anchor=&quot;middle&quot; font-size=&quot;11.5&quot; font-weight=&quot;700&quot; fill=&quot;#b42318&quot;&gt;油车直发门店 · 电车亦可直发&lt;/text&gt;
+&lt;!-- 顶部油车/电车直发大抛物线主通道 (从线索中心一气呵成直达店端【COC/NEV销售助手】，留足顶部呼吸间距) --&gt;
+&lt;path d=&quot;M 411 52 C 480 2, 830 2, 901 90&quot; fill=&quot;none&quot; stroke=&quot;#e02d2d&quot; stroke-width=&quot;2.6&quot; marker-end=&quot;url(#a1r)&quot;/&gt;
+&lt;text x=&quot;656&quot; y=&quot;10&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;700&quot; fill=&quot;#b42318&quot;&gt;油车直发门店 · 电车亦可直发&lt;/text&gt;
 
 &lt;!-- ================= 左侧：总部体系 (x: 16 ~ 716，统一顶平线 y: 58) ================= --&gt;
 
-&lt;!-- 1. 多垂媒线索 --&gt;
+&lt;!-- 1. 多垂媒线索 (列宽 x: 16 ~ 136，顶部胶囊严格对齐本列，彻底消除跨列重叠) --&gt;
+&lt;rect x=&quot;16&quot; y=&quot;28&quot; width=&quot;120&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#eff4ff&quot; stroke=&quot;#93c5fd&quot; stroke-width=&quot;1.2&quot;/&gt;
+&lt;text x=&quot;76&quot; y=&quot;43&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; font-weight=&quot;600&quot; fill=&quot;#1d4ed8&quot;&gt;统一接入 · 智能分流&lt;/text&gt;
+
 &lt;rect x=&quot;16&quot; y=&quot;58&quot; width=&quot;120&quot; height=&quot;76&quot; rx=&quot;10&quot; fill=&quot;#fff&quot; stroke=&quot;#cbd5e1&quot;/&gt;
 &lt;text x=&quot;76&quot; y=&quot;90&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0f172a&quot;&gt;多垂媒线索&lt;/text&gt;
 &lt;text x=&quot;76&quot; y=&quot;112&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; fill=&quot;#64748b&quot;&gt;掩码号线索（抖音）&lt;/text&gt;
 &lt;line x1=&quot;136&quot; y1=&quot;96&quot; x2=&quot;160&quot; y2=&quot;96&quot; stroke=&quot;#94a3b8&quot; stroke-width=&quot;1.8&quot; marker-end=&quot;url(#a1)&quot;/&gt;
 
-&lt;!-- 2. 线索接入平台 --&gt;
-&lt;!-- 【第2章】核心系统一 标识徽章 --&gt;
-&lt;g class=&quot;jump-badge&quot; onclick=&quot;jumpToSec(&#x27;sec2&#x27;)&quot; title=&quot;点击直达 第2章：核心系统一：线索接入平台改造方案&quot;&gt;
-  &lt;rect x=&quot;164&quot; y=&quot;32&quot; width=&quot;145&quot; height=&quot;20&quot; rx=&quot;5&quot; fill=&quot;#1d4ed8&quot;/&gt;
-  &lt;text x=&quot;236&quot; y=&quot;46&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; font-weight=&quot;700&quot; fill=&quot;#ffffff&quot;&gt;★【第2章】核心系统一&lt;/text&gt;
+&lt;!-- 2. 线索接入平台 (列宽 x: 164 ~ 309，顶部徽章齐平 y: 28 ~ 50，与左侧留足 28px 纯净间距) --&gt;
+&lt;!-- 核心系统一 标识徽章 (统一样式与跳转交互) --&gt;
+&lt;g class=&quot;jump-badge&quot; onclick=&quot;jumpToSec(&#x27;sec2&#x27;)&quot; title=&quot;点击直达 第2章：核心系统一改造方案&quot;&gt;
+  &lt;rect x=&quot;164&quot; y=&quot;28&quot; width=&quot;145&quot; height=&quot;22&quot; rx=&quot;6&quot; fill=&quot;#1e3a8a&quot; stroke=&quot;#3b82f6&quot; stroke-width=&quot;1.2&quot;/&gt;
+  &lt;text x=&quot;236&quot; y=&quot;43&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#93c5fd&quot;&gt;★【第2章】核心系统一改造&lt;/text&gt;
 &lt;/g&gt;
 &lt;rect x=&quot;164&quot; y=&quot;58&quot; width=&quot;145&quot; height=&quot;76&quot; rx=&quot;10&quot; fill=&quot;#fff&quot; stroke=&quot;#1d4ed8&quot; stroke-width=&quot;2&quot;/&gt;
 &lt;text x=&quot;236&quot; y=&quot;90&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0f172a&quot;&gt;线索接入平台&lt;/text&gt;
@@ -382,82 +381,92 @@ tr:hover td { background: #f0f7ff; }
 &lt;text x=&quot;520&quot; y=&quot;128&quot; text-anchor=&quot;middle&quot; font-size=&quot;8.5&quot; font-weight=&quot;600&quot; fill=&quot;#067647&quot;&gt;回流派店&lt;/text&gt;
 
 &lt;!-- 4. DCC 培育系统（总部） --&gt;
-&lt;!-- 【第3章】核心系统二 标识徽章 --&gt;
-&lt;g class=&quot;jump-badge&quot; onclick=&quot;jumpToSec(&#x27;sec3&#x27;)&quot; title=&quot;点击直达 第3章：核心系统二：DCC培育系统（总部）改造方案&quot;&gt;
-  &lt;rect x=&quot;556&quot; y=&quot;32&quot; width=&quot;160&quot; height=&quot;20&quot; rx=&quot;5&quot; fill=&quot;#0f172a&quot; stroke=&quot;#fbbf24&quot; stroke-width=&quot;1.2&quot;/&gt;
-  &lt;text x=&quot;636&quot; y=&quot;46&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; font-weight=&quot;700&quot; fill=&quot;#fbbf24&quot;&gt;★【第3章】核心系统二&lt;/text&gt;
+&lt;!-- 核心系统二 标识徽章 (齐平 y: 28 ~ 50，与核心系统一完美对称、统一蓝色高级设计语言) --&gt;
+&lt;g class=&quot;jump-badge&quot; onclick=&quot;jumpToSec(&#x27;sec3&#x27;)&quot; title=&quot;点击直达 第3章：核心系统二改造方案&quot;&gt;
+  &lt;rect x=&quot;556&quot; y=&quot;28&quot; width=&quot;160&quot; height=&quot;22&quot; rx=&quot;6&quot; fill=&quot;#1e3a8a&quot; stroke=&quot;#3b82f6&quot; stroke-width=&quot;1.2&quot;/&gt;
+  &lt;text x=&quot;636&quot; y=&quot;43&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#93c5fd&quot;&gt;★【第3章】核心系统二改造&lt;/text&gt;
 &lt;/g&gt;
-&lt;rect x=&quot;556&quot; y=&quot;58&quot; width=&quot;160&quot; height=&quot;76&quot; rx=&quot;10&quot; fill=&quot;#1e3a8a&quot; stroke=&quot;#fbbf24&quot; stroke-width=&quot;1.8&quot;/&gt;
+&lt;rect x=&quot;556&quot; y=&quot;58&quot; width=&quot;160&quot; height=&quot;76&quot; rx=&quot;10&quot; fill=&quot;#1e3a8a&quot; stroke=&quot;#3b82f6&quot; stroke-width=&quot;1.8&quot;/&gt;
 &lt;text x=&quot;636&quot; y=&quot;88&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#ffffff&quot;&gt;DCC 培育系统（总部）&lt;/text&gt;
 &lt;text x=&quot;636&quot; y=&quot;108&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#c7d7f5&quot;&gt;数据公司开发 · NEV 电车培育&lt;/text&gt;
 &lt;text x=&quot;636&quot; y=&quot;122&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#c7d7f5&quot;&gt;完成后回流线索中心&lt;/text&gt;
 
-&lt;!-- 左侧中部的改动点 --&gt;
-&lt;text x=&quot;164&quot; y=&quot;152&quot; font-size=&quot;9&quot; fill=&quot;#b42318&quot;&gt;&lt;tspan font-weight=&quot;700&quot;&gt;改动点：&lt;/tspan&gt;① 增加线索加密算法及判重逻辑&lt;/text&gt;
-&lt;text x=&quot;164&quot; y=&quot;165&quot; font-size=&quot;9&quot; fill=&quot;#b42318&quot;&gt;　　　　　② 明码 / 掩码标识区分及下发逻辑&lt;/text&gt;
+&lt;!-- 左侧中部的改动点 (精简对齐，彻底消除文字与连线重叠) --&gt;
+&lt;text x=&quot;164&quot; y=&quot;152&quot; font-size=&quot;8.5&quot; fill=&quot;#b42318&quot;&gt;&lt;tspan font-weight=&quot;700&quot;&gt;改动：&lt;/tspan&gt;① 线索加密算法与判重&lt;/text&gt;
+&lt;text x=&quot;164&quot; y=&quot;165&quot; font-size=&quot;8.5&quot; fill=&quot;#b42318&quot;&gt;　　　② 区分明/掩码并下发&lt;/text&gt;
 
-&lt;text x=&quot;339&quot; y=&quot;152&quot; font-size=&quot;9&quot; fill=&quot;#b42318&quot;&gt;&lt;tspan font-weight=&quot;700&quot;&gt;改动点：&lt;/tspan&gt;① COC 补加密字段  ② NEV 加密号补全&lt;/text&gt;
-&lt;text x=&quot;339&quot; y=&quot;165&quot; font-size=&quot;9&quot; fill=&quot;#b42318&quot;&gt;　　　　　③ 报表增加明码 / 掩码逻辑&lt;/text&gt;
+&lt;text x=&quot;296&quot; y=&quot;152&quot; font-size=&quot;8.5&quot; fill=&quot;#b42318&quot;&gt;&lt;tspan font-weight=&quot;700&quot;&gt;改动：&lt;/tspan&gt;① COC 补加密字段&lt;/text&gt;
+&lt;text x=&quot;296&quot; y=&quot;165&quot; font-size=&quot;8.5&quot; fill=&quot;#b42318&quot;&gt;　　　② NEV 加密号补全&lt;/text&gt;
+&lt;text x=&quot;296&quot; y=&quot;178&quot; font-size=&quot;8.5&quot; fill=&quot;#b42318&quot;&gt;　　　③ 报表增加明/掩码&lt;/text&gt;
 
-&lt;!-- 总部下方的自有外呼分支 --&gt;
-&lt;line x1=&quot;636&quot; y1=&quot;134&quot; x2=&quot;636&quot; y2=&quot;178&quot; stroke=&quot;#94a3b8&quot; stroke-width=&quot;1.5&quot;/&gt;
-&lt;line x1=&quot;436&quot; y1=&quot;178&quot; x2=&quot;690&quot; y2=&quot;178&quot; stroke=&quot;#94a3b8&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;!-- 总部下方的外呼分支架构（两级清晰分流，统一主轴，所有线条与箭头100%外露无遮挡） --&gt;
+&lt;!-- 一级分流：主垂线自总部中轴直落，分流横线连接模式一与模式二 --&gt;
+&lt;line x1=&quot;608&quot; y1=&quot;134&quot; x2=&quot;608&quot; y2=&quot;148&quot; stroke=&quot;#94a3b8&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;line x1=&quot;434&quot; y1=&quot;148&quot; x2=&quot;608&quot; y2=&quot;148&quot; stroke=&quot;#94a3b8&quot; stroke-width=&quot;1.5&quot;/&gt;
 
-&lt;line x1=&quot;436&quot; y1=&quot;178&quot; x2=&quot;436&quot; y2=&quot;194&quot; stroke=&quot;#12b76a&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1n)&quot;/&gt;
-&lt;line x1=&quot;528&quot; y1=&quot;178&quot; x2=&quot;528&quot; y2=&quot;196&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1o)&quot;/&gt;
-&lt;line x1=&quot;608&quot; y1=&quot;178&quot; x2=&quot;608&quot; y2=&quot;196&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1o)&quot;/&gt;
-&lt;line x1=&quot;690&quot; y1=&quot;178&quot; x2=&quot;690&quot; y2=&quot;196&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1o)&quot;/&gt;
-
-&lt;!-- 总部 4 个下游卡片 (y: 194 ~ 240) --&gt;
-&lt;!-- 模式一：自有 DCC 外呼（带第4章标识） --&gt;
+&lt;!-- 左分支：直达模式一（自有DCC外呼，长绿线加箭头，清晰无遮挡） --&gt;
+&lt;line x1=&quot;434&quot; y1=&quot;148&quot; x2=&quot;434&quot; y2=&quot;196&quot; stroke=&quot;#12b76a&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1n)&quot;/&gt;
 &lt;g class=&quot;jump-badge&quot; onclick=&quot;jumpToSec(&#x27;sec4&#x27;)&quot; title=&quot;点击直达 第4章：轻量即时隐私号模式（P0决战期推荐方案）&quot;&gt;
-  &lt;rect x=&quot;382&quot; y=&quot;194&quot; width=&quot;108&quot; height=&quot;46&quot; rx=&quot;6&quot; fill=&quot;#ecfdf5&quot; stroke=&quot;#059669&quot; stroke-width=&quot;1.8&quot;/&gt;
-  &lt;rect x=&quot;384&quot; y=&quot;196&quot; width=&quot;104&quot; height=&quot;15&quot; rx=&quot;3&quot; fill=&quot;#059669&quot;/&gt;
-  &lt;text x=&quot;436&quot; y=&quot;207&quot; text-anchor=&quot;middle&quot; font-size=&quot;8.5&quot; font-weight=&quot;700&quot; fill=&quot;#fff&quot;&gt;★第4章·模式一(推荐)&lt;/text&gt;
-  &lt;text x=&quot;436&quot; y=&quot;224&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#065f46&quot;&gt;明码 / 临时隐私号&lt;/text&gt;
-  &lt;text x=&quot;436&quot; y=&quot;236&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; font-weight=&quot;700&quot; fill=&quot;#065f46&quot;&gt;自有 DCC 外呼&lt;/text&gt;
+  &lt;rect x=&quot;382&quot; y=&quot;196&quot; width=&quot;104&quot; height=&quot;46&quot; rx=&quot;6&quot; fill=&quot;#ecfdf5&quot; stroke=&quot;#059669&quot; stroke-width=&quot;1.8&quot;/&gt;
+  &lt;rect x=&quot;384&quot; y=&quot;198&quot; width=&quot;100&quot; height=&quot;15&quot; rx=&quot;3&quot; fill=&quot;#059669&quot;/&gt;
+  &lt;text x=&quot;434&quot; y=&quot;209&quot; text-anchor=&quot;middle&quot; font-size=&quot;8.5&quot; font-weight=&quot;700&quot; fill=&quot;#fff&quot;&gt;★【第4章】模式一(推荐)&lt;/text&gt;
+  &lt;text x=&quot;434&quot; y=&quot;224&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#065f46&quot;&gt;明码 / 临时隐私号&lt;/text&gt;
+  &lt;text x=&quot;434&quot; y=&quot;236&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; font-weight=&quot;700&quot; fill=&quot;#065f46&quot;&gt;自有 DCC 外呼&lt;/text&gt;
 &lt;/g&gt;
 
-&lt;!-- 模式二：垂媒智能DCC组标头 --&gt;
+&lt;!-- 右分支：直达模式二徽章标头（P1升级） --&gt;
+&lt;line x1=&quot;608&quot; y1=&quot;148&quot; x2=&quot;608&quot; y2=&quot;168&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1o)&quot;/&gt;
 &lt;g class=&quot;jump-badge&quot; onclick=&quot;jumpToSec(&#x27;sec4&#x27;)&quot; title=&quot;点击直达 第4章：深度集成智能DCC模式（P1演进期升级）&quot;&gt;
-  &lt;rect x=&quot;502&quot; y=&quot;174&quot; width=&quot;216&quot; height=&quot;17&quot; rx=&quot;4&quot; fill=&quot;#fffbeb&quot; stroke=&quot;#d97706&quot; stroke-width=&quot;1.2&quot;/&gt;
-  &lt;text x=&quot;610&quot; y=&quot;186&quot; text-anchor=&quot;middle&quot; font-size=&quot;8.5&quot; font-weight=&quot;700&quot; fill=&quot;#b45309&quot;&gt;★【第4章·模式二】垂媒智能DCC（P1升级）&lt;/text&gt;
+  &lt;rect x=&quot;500&quot; y=&quot;168&quot; width=&quot;216&quot; height=&quot;20&quot; rx=&quot;5&quot; fill=&quot;#fffbeb&quot; stroke=&quot;#f59e0b&quot; stroke-width=&quot;1.2&quot;/&gt;
+  &lt;text x=&quot;608&quot; y=&quot;182&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;700&quot; fill=&quot;#b45309&quot;&gt;★【第4章】模式二(P1升级) · 垂媒智能DCC&lt;/text&gt;
 &lt;/g&gt;
 
-&lt;rect x=&quot;498&quot; y=&quot;196&quot; width=&quot;60&quot; height=&quot;42&quot; rx=&quot;6&quot; fill=&quot;#fff7ed&quot; stroke=&quot;#f59e0b&quot;/&gt;
-&lt;text x=&quot;528&quot; y=&quot;221&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; font-weight=&quot;600&quot; fill=&quot;#9a3412&quot;&gt;智能 DCC&lt;/text&gt;
+&lt;!-- 二级分流：从模式二标头底部向下引线，分流给3家垂媒 --&gt;
+&lt;line x1=&quot;608&quot; y1=&quot;188&quot; x2=&quot;608&quot; y2=&quot;196&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;line x1=&quot;532&quot; y1=&quot;196&quot; x2=&quot;684&quot; y2=&quot;196&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot;/&gt;
 
-&lt;rect x=&quot;570&quot; y=&quot;196&quot; width=&quot;76&quot; height=&quot;42&quot; rx=&quot;6&quot; fill=&quot;#fff7ed&quot; stroke=&quot;#f59e0b&quot;/&gt;
-&lt;text x=&quot;608&quot; y=&quot;213&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#9a3412&quot;&gt;汽车之家&lt;/text&gt;
-&lt;text x=&quot;608&quot; y=&quot;227&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#9a3412&quot;&gt;智能 DCC&lt;/text&gt;
+&lt;line x1=&quot;532&quot; y1=&quot;196&quot; x2=&quot;532&quot; y2=&quot;206&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1o)&quot;/&gt;
+&lt;line x1=&quot;608&quot; y1=&quot;196&quot; x2=&quot;608&quot; y2=&quot;206&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1o)&quot;/&gt;
+&lt;line x1=&quot;684&quot; y1=&quot;196&quot; x2=&quot;684&quot; y2=&quot;206&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1o)&quot;/&gt;
 
-&lt;rect x=&quot;658&quot; y=&quot;196&quot; width=&quot;60&quot; height=&quot;42&quot; rx=&quot;6&quot; fill=&quot;#fff7ed&quot; stroke=&quot;#f59e0b&quot;/&gt;
-&lt;text x=&quot;688&quot; y=&quot;213&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#9a3412&quot;&gt;易车&lt;/text&gt;
-&lt;text x=&quot;688&quot; y=&quot;227&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#9a3412&quot;&gt;智能 DCC&lt;/text&gt;
+&lt;!-- 垂媒 3 个卡片 (懂车帝、汽车之家、易车) --&gt;
+&lt;rect x=&quot;500&quot; y=&quot;206&quot; width=&quot;64&quot; height=&quot;36&quot; rx=&quot;6&quot; fill=&quot;#fff7ed&quot; stroke=&quot;#f59e0b&quot;/&gt;
+&lt;text x=&quot;532&quot; y=&quot;220&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#9a3412&quot;&gt;懂车帝&lt;/text&gt;
+&lt;text x=&quot;532&quot; y=&quot;234&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#9a3412&quot;&gt;智能 DCC&lt;/text&gt;
 
-&lt;!-- 总部回流连接线与长条 (严密连接，无浮空线) --&gt;
-&lt;line x1=&quot;436&quot; y1=&quot;240&quot; x2=&quot;436&quot; y2=&quot;252&quot; stroke=&quot;#12b76a&quot; stroke-width=&quot;1.5&quot;/&gt;
-&lt;line x1=&quot;608&quot; y1=&quot;238&quot; x2=&quot;608&quot; y2=&quot;252&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot;/&gt;
-&lt;line x1=&quot;436&quot; y1=&quot;252&quot; x2=&quot;608&quot; y2=&quot;252&quot; stroke=&quot;#12b76a&quot; stroke-width=&quot;1.5&quot;/&gt;
-&lt;line x1=&quot;552&quot; y1=&quot;252&quot; x2=&quot;552&quot; y2=&quot;262&quot; stroke=&quot;#12b76a&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1n)&quot;/&gt;
+&lt;rect x=&quot;574&quot; y=&quot;206&quot; width=&quot;68&quot; height=&quot;36&quot; rx=&quot;6&quot; fill=&quot;#fff7ed&quot; stroke=&quot;#f59e0b&quot;/&gt;
+&lt;text x=&quot;608&quot; y=&quot;220&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#9a3412&quot;&gt;汽车之家&lt;/text&gt;
+&lt;text x=&quot;608&quot; y=&quot;234&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#9a3412&quot;&gt;智能 DCC&lt;/text&gt;
 
-&lt;rect x=&quot;386&quot; y=&quot;262&quot; width=&quot;332&quot; height=&quot;26&quot; rx=&quot;6&quot; fill=&quot;#ecfdf3&quot; stroke=&quot;#12b76a&quot;/&gt;
-&lt;text x=&quot;552&quot; y=&quot;279&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; font-weight=&quot;600&quot; fill=&quot;#067647&quot;&gt;通话结果与跟进状态回流主机厂&lt;/text&gt;
+&lt;rect x=&quot;652&quot; y=&quot;206&quot; width=&quot;64&quot; height=&quot;36&quot; rx=&quot;6&quot; fill=&quot;#fff7ed&quot; stroke=&quot;#f59e0b&quot;/&gt;
+&lt;text x=&quot;684&quot; y=&quot;220&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#9a3412&quot;&gt;易车&lt;/text&gt;
+&lt;text x=&quot;684&quot; y=&quot;234&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#9a3412&quot;&gt;智能 DCC&lt;/text&gt;
 
-&lt;text x=&quot;386&quot; y=&quot;310&quot; font-size=&quot;9&quot; fill=&quot;#b42318&quot;&gt;&lt;tspan font-weight=&quot;700&quot;&gt;改动点：&lt;/tspan&gt;① 线索分配策略与路由修改　② 多家垂媒 DCC 集成&lt;/text&gt;
-&lt;text x=&quot;386&quot; y=&quot;324&quot; font-size=&quot;9&quot; fill=&quot;#b42318&quot;&gt;　　　　　③ 数据库按明码 / 掩码隔离，双向可对账&lt;/text&gt;
+&lt;!-- 总部回流连接线与长条 (严密连接，所有卡片均有垂直回流引线) --&gt;
+&lt;line x1=&quot;434&quot; y1=&quot;242&quot; x2=&quot;434&quot; y2=&quot;254&quot; stroke=&quot;#12b76a&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;line x1=&quot;532&quot; y1=&quot;242&quot; x2=&quot;532&quot; y2=&quot;254&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;line x1=&quot;608&quot; y1=&quot;242&quot; x2=&quot;608&quot; y2=&quot;254&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;line x1=&quot;684&quot; y1=&quot;242&quot; x2=&quot;684&quot; y2=&quot;254&quot; stroke=&quot;#ea9a0e&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;line x1=&quot;434&quot; y1=&quot;254&quot; x2=&quot;684&quot; y2=&quot;254&quot; stroke=&quot;#12b76a&quot; stroke-width=&quot;1.5&quot;/&gt;
+&lt;line x1=&quot;559&quot; y1=&quot;254&quot; x2=&quot;559&quot; y2=&quot;264&quot; stroke=&quot;#12b76a&quot; stroke-width=&quot;1.5&quot; marker-end=&quot;url(#a1n)&quot;/&gt;
+
+&lt;rect x=&quot;382&quot; y=&quot;264&quot; width=&quot;334&quot; height=&quot;26&quot; rx=&quot;6&quot; fill=&quot;#ecfdf3&quot; stroke=&quot;#12b76a&quot;/&gt;
+&lt;text x=&quot;549&quot; y=&quot;281&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; font-weight=&quot;600&quot; fill=&quot;#067647&quot;&gt;通话结果与跟进状态回流主机厂&lt;/text&gt;
+
+&lt;text x=&quot;382&quot; y=&quot;310&quot; font-size=&quot;9&quot; fill=&quot;#b42318&quot;&gt;&lt;tspan font-weight=&quot;700&quot;&gt;改动点：&lt;/tspan&gt;① 线索分配策略与路由修改　② 多家垂媒 DCC 集成&lt;/text&gt;
+&lt;text x=&quot;382&quot; y=&quot;324&quot; font-size=&quot;9&quot; fill=&quot;#b42318&quot;&gt;　　　　　③ 数据库按明码 / 掩码隔离，双向可对账&lt;/text&gt;
 
 
 &lt;!-- ================= 【间隙优化 2】：总部与门店之间预留 74px 宽幅隔离带 (716 ~ 790) ================= --&gt;
 &lt;!-- ================= 右侧：门店培育系统 (x: 790 ~ 1260，顶平线齐平 y: 58) ================= --&gt;
 
 &lt;rect x=&quot;790&quot; y=&quot;58&quot; width=&quot;470&quot; height=&quot;326&quot; rx=&quot;12&quot; fill=&quot;#f8fafc&quot; stroke=&quot;#94a3b8&quot; stroke-width=&quot;1.5&quot;/&gt;
-&lt;text x=&quot;814&quot; y=&quot;80&quot; text-anchor=&quot;start&quot; font-size=&quot;13.5&quot; font-weight=&quot;700&quot; fill=&quot;#0f172a&quot;&gt;门店培育系统&lt;/text&gt;
+&lt;text x=&quot;814&quot; y=&quot;82&quot; text-anchor=&quot;start&quot; font-size=&quot;13.5&quot; font-weight=&quot;700&quot; fill=&quot;#0f172a&quot;&gt;门店培育系统&lt;/text&gt;
 
-&lt;!-- 【第4章推演重点】店端深度集成风险与演进徽章 --&gt;
+&lt;!-- 【第4章推演重点】店端新建DCC推演 标识徽章 (语义规整、视觉统一) --&gt;
 &lt;g class=&quot;jump-badge&quot; onclick=&quot;jumpToSec(&#x27;sec4&#x27;)&quot; title=&quot;点击直达 第4章：店端新建DCC推演（需117~155人天，1月4日前不宜强推）&quot;&gt;
-  &lt;rect x=&quot;915&quot; y=&quot;65&quot; width=&quot;330&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#fef2f2&quot; stroke=&quot;#ef4444&quot; stroke-width=&quot;1.2&quot;/&gt;
-  &lt;text x=&quot;1080&quot; y=&quot;80&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#b91c1c&quot;&gt;★【第4章推演重点】店端深度改造风险(117~155人天·建议P1推进)&lt;/text&gt;
+  &lt;rect x=&quot;925&quot; y=&quot;67&quot; width=&quot;315&quot; height=&quot;22&quot; rx=&quot;6&quot; fill=&quot;#fef2f2&quot; stroke=&quot;#fca5a5&quot; stroke-width=&quot;1.2&quot;/&gt;
+  &lt;text x=&quot;1082&quot; y=&quot;82&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; font-weight=&quot;700&quot; fill=&quot;#b91c1c&quot;&gt;★【第4章】店端新建DCC推演 · 117~155人天(建议P1)&lt;/text&gt;
 &lt;/g&gt;
 
 &lt;!-- 顶部：销售助手 与 懂车帝智能DCC --&gt;
